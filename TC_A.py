@@ -40,7 +40,7 @@ def get_intensity_info(wind, cyc_type="tropical"):
     else: return "超強颱風", "#BA68C8", tcmarkers.HU
 
 def draw_chart():
-    print(f"[{time.strftime('%H:%M:%S')}] 正在生成預報圖...")
+    print(f"[{time.strftime('%H:%M:%S')}] 正在生成預報...")
     try:
         df_past = pd.read_csv(PAST_CSV)
         df_fore = pd.read_csv(FORE_CSV)
