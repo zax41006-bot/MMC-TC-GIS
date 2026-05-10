@@ -1,4 +1,4 @@
-datetime,lat,lng,intensity,wind,minimum central pressure,type
+﻿datetime,lat,lng,intensity,wind,minimum central pressure,type
 5/5/2026 14:00,8.7,149.3,TD,55,1000,past
 5/5/2026 20:00,8.4,148.7,TD,55,1000,past
 6/5/2026 02:00,8.6,148.7,TD,55,1000,past
@@ -24,4 +24,7 @@ datetime,lat,lng,intensity,wind,minimum central pressure,type
 9/5/2026 17:00,9.6,135.2,TS,65,998,past
 9/5/2026 20:00,9.7,134.8,TS,65,998,past
 9/5/2026 23:00,9.8,134.3,TS,65,998,past
-10/5/2026 02:00,9.9,133.8,TS,65,998,current
+10/5/2026 02:00,9.9,133.8,TS,65,998,past
+10/5/2026 05:00,10.0,133.6,TS,65,998,past
+10/5/2026 08:00,10.2,133.2,TD,55,1000,past
+10/5/2026 11:00,9.9,132.4,TD,55,1000,current
