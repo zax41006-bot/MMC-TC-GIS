@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     <style>
+        /* ================= 原有 TC GIS 樣式 ================= */
         :root { --panel-bg: rgba(255, 255, 255, 0.95); --accent-color: #2c3e50; }
         body { margin: 0; font-family: 'Segoe UI', "Microsoft JhengHei", sans-serif; overflow: hidden; }
 
@@ -26,11 +27,46 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 13px;
-            margin-left: 15px;
+            margin-left: 10px;
             font-weight: bold;
             transition: background 0.3s;
         }
         .img-btn:hover { background: #d35400; }
+        
+        /* 地圖類型選擇器樣式 (移至最上方) */
+        #map-type-selector {
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            z-index: 1005;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            outline: none;
+            width: 130px;
+            font-weight: bold;
+        }
+
+        /* 雷達按鈕樣式 (下推至選擇器下方) */
+        .radar-toggle-btn {
+            position: absolute;
+            top: 105px;
+            right: 10px;
+            z-index: 1005;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            font-size: 14px;
+            width: 130px;
+        }
 
         #tc-selector { background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
 
@@ -48,57 +84,47 @@
         .line { width: 25px; height: 3px; flex-shrink: 0; }
         .box { width: 14px; height: 14px; border: 1px dashed #e67e22; background: rgba(241,196,15,0.15); flex-shrink: 0; }
 
-        .popup-title { font-weight: bold; border-bottom: 1px solid #ccc; margin-bottom: 5px; color: #d35400; padding-bottom: 2px; }
-        .popup-item { margin: 3px 0; font-family: 'Consolas', monospace; font-size: 12px; }
-
         #img-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; cursor: zoom-out;
         }
-        #img-overlay img {
-            max-width: 95%;
-            max-height: 90%;
-            border: 3px solid white;
-            border-radius: 5px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
-        .close-btn {
-            position: absolute; top: 20px; right: 30px;
-            color: white; font-size: 40px; cursor: pointer;
-        }
-
-        .circle-label {
-            background: none !important;
-            border: none !important;
-            box-shadow: none !important;
-        }
+        #img-overlay img { max-width: 95%; max-height: 90%; border: 3px solid white; border-radius: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        .close-btn { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+        .circle-label { background: none !important; border: none !important; box-shadow: none !important; }
 
         @media screen and (max-width: 768px) {
-            .professional-legend {
-                width: calc(100% - 40px);
-                left: 10px; right: 10px; bottom: 15px;
-                padding: 10px;
-                display: flex; flex-wrap: wrap; 
-                justify-content: space-between;
-            }
-            .legend-title { width: 100%; font-size: 11px; margin-top: 5px; }
-            .legend-row { 
-                width: 48%; 
-                margin: 2px 0;
-                font-size: 10px;
-                gap: 5px;
-            }
-            .dot { width: 10px; height: 10px; }
-            .line { width: 15px; }
-            .header b { font-size: 14px; }
-            #tc-selector { padding: 2px 4px; font-size: 12px; }
+            .professional-legend { width: calc(100% - 40px); left: 10px; right: 10px; bottom: 15px; padding: 10px; display: flex; flex-wrap: wrap; justify-content: space-between; }
+            .radar-ui { bottom: 120px !important; width: calc(100% - 40px) !important; }
+            .header b { font-size: 13px; }
+            .img-btn { padding: 4px 8px; font-size: 11px; }
         }
+
+        /* ================= 雷達面板樣式 (左下角) ================= */
+        .radar-ui {
+            position: absolute;
+            bottom: 20px; left: 10px;
+            background: var(--panel-bg);
+            padding: 12px;
+            border-radius: 8px;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.15);
+            border: 1px solid #ddd;
+            width: 260px;
+            display: none;
+        }
+        .radar-controls {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #eee;
+        }
+        #radar-timestamp { font-size: 16px; font-weight: 600; color: #3498db; }
+        .radar-buttons { display: flex; gap: 6px; }
+        .radar-buttons button { width: 34px; height: 32px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; font-size: 15px; }
+        
+        .radar-legend-bar {
+            height: 10px; width: 100%; border-radius: 2px; margin-bottom: 5px;
+            background: linear-gradient(to right, #827b69 0%, #ded097 19%, #88ddee 20%, #005588 46%, #ffee00 46.5%, #ff8100 59%, #ff4400 60%, #5d0000 72%, #ffaaff 73.5%, #ff4eff 86%, #ffffff 86.5%, #ffffff 99%, #00ff00 100%);
+        }
+        .radar-legend-labels { display: flex; justify-content: space-between; font-size: 10px; color: #666; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -106,18 +132,43 @@
 <div class="header">
     <div>
         <b>🌀 MMC 熱帶氣旋預報GIS（測試版）</b>
-        <!--<button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>-->
+        <button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>
     </div>
     <select id="tc-selector" onchange="init()">
         <option value="A">黑格比</option>
     </select>
 </div>
 
+<select id="map-type-selector" onchange="changeMapType(this.value)">
+    <option value="light">淺色地圖</option>
+    <option value="dark">深色地圖</option>
+    <option value="satellite">衛星地圖</option>
+</select>
+<button id="radar-btn" class="radar-toggle-btn" onclick="toggleRadar()">顯示雷達</button>
+
 <div id="mapid"></div>
 
 <div id="img-overlay" onclick="this.style.display='none'">
     <span class="close-btn">&times;</span>
     <img id="forecast-img-src" src="" alt="圖片版預報加載中...">
+</div>
+
+<div id="radar-ui-container" class="radar-ui">
+    <div class="radar-controls">
+        <span id="radar-timestamp">--:--</span>
+        <div class="radar-buttons">
+            <button onclick="stopRadar(); showRadarFrame(animationPosition - 1);">‹</button>
+            <button id="playBtn" onclick="playStopRadar();">▶</button>
+            <button onclick="stopRadar(); showRadarFrame(animationPosition + 1);">›</button>
+        </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:5px;">
+        <span>雷達圖例</span><span>dBZ</span>
+    </div>
+    <div class="radar-legend-bar"></div>
+    <div class="radar-legend-labels">
+        <span>5</span><span>15</span><span>25</span><span>35</span><span>45</span><span>55</span><span>65</span><span>75</span>
+    </div>
 </div>
 
 <div class="professional-legend">
@@ -138,29 +189,26 @@
 </div>
 
 <script>
-const intensityColors = {
-    "LPA": "#dcdcdc", "EX": "#dcdcdc", "TD": "#eee8aa", "TS": "#3498db", 
-    "STS": "#2ecc71", "TY": "#f1c40f", "STY": "#e67e22", "SUTY": "#9b59b6", "default": "#666"
+// ================= 地圖切換邏輯 =================
+const baseLayers = {
+    light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
+    dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
+    satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}')
 };
 
-const intensityNames = {
-    "LPA": "低壓區", "TD": "熱帶低氣壓", "TS": "熱帶風暴", "STS": "強烈熱帶風暴",
-    "TY": "颱風", "STY": "強颱風", "SUTY": "超強颱風", "EX": "溫帶氣旋"
-};
+function changeMapType(type) {
+    Object.values(baseLayers).forEach(layer => map.removeLayer(layer));
+    baseLayers[type].addTo(map);
+}
 
-// 澳門配置
-const MACAO_COORDS = [22.17, 113.55]; // [lat, lng]
-const ALERT_CIRCLES = [
-    { r: 100, color: "#A0A0A0", opacity: 0.3 },
-    { r: 200, color: "#808080", opacity: 0.4 },
-    { r: 400, color: "#808080", opacity: 0.5 },
-    { r: 600, color: "#A0A0A0", opacity: 0.6 },
-    { r: 800, color: "#FF4D4D", opacity: 0.7 }
-];
+const intensityColors = { "LPA": "#dcdcdc", "EX": "#dcdcdc", "TD": "#eee8aa", "TS": "#3498db", "STS": "#2ecc71", "TY": "#f1c40f", "STY": "#e67e22", "SUTY": "#9b59b6", "default": "#666" };
+const intensityNames = { "LPA": "低壓區", "TD": "熱帶低氣壓", "TS": "熱帶風暴", "STS": "強烈熱帶風暴", "TY": "颱風", "STY": "強颱風", "SUTY": "超強颱風", "EX": "溫帶氣旋" };
+const MACAO_COORDS = [22.17, 113.55]; 
+const ALERT_CIRCLES = [ { r: 100, color: "#A0A0A0", opacity: 0.3 }, { r: 200, color: "#808080", opacity: 0.4 }, { r: 400, color: "#808080", opacity: 0.5 }, { r: 600, color: "#A0A0A0", opacity: 0.6 }, { r: 800, color: "#FF4D4D", opacity: 0.7 } ];
 
 var map = L.map('mapid', { zoomControl: false }).setView([18.0, 135.0], 5);
 L.control.zoom({ position: 'topleft' }).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+baseLayers.light.addTo(map);
 let trackLayer = L.layerGroup().addTo(map);
 
 function toggleForecastImg() {
@@ -180,9 +228,7 @@ function parseCSV(text) {
         let obj = {};
         headers.forEach((h, i) => {
             let val = values[i] ? values[i].trim() : "";
-            if(['lat', 'lng', 'lon', 'f_time', 'wind', 'minimum central pressure'].includes(h)) {
-                val = parseFloat(val);
-            }
+            if(['lat', 'lng', 'lon', 'f_time', 'wind', 'minimum central pressure'].includes(h)) val = parseFloat(val);
             obj[h] = val;
         });
         if (obj.lon && !obj.lng) obj.lng = obj.lon;
@@ -196,10 +242,7 @@ function getSegmentSector(p1, r1, p2, r2) {
     const p1_r = turf.destination(p1, r1, bearing + 90, {units: 'kilometers'});
     const p2_l = turf.destination(p2, r2, bearing - 90, {units: 'kilometers'});
     const p2_r = turf.destination(p2, r2, bearing + 90, {units: 'kilometers'});
-    return turf.polygon([[
-        p1_l.geometry.coordinates, p2_l.geometry.coordinates,
-        p2_r.geometry.coordinates, p1_r.geometry.coordinates, p1_l.geometry.coordinates
-    ]]);
+    return turf.polygon([[p1_l.geometry.coordinates, p2_l.geometry.coordinates, p2_r.geometry.coordinates, p1_r.geometry.coordinates, p1_l.geometry.coordinates]]);
 }
 
 function getSmoothLine(points, options = {}) {
@@ -211,89 +254,37 @@ function getSmoothLine(points, options = {}) {
 
 function createPopupContent(data, type) {
     const timeValue = data.datetime || data.time || 'N/A';
-    let header = ' 過去位置';
-    if (type === 'current') header = ' 實時位置 ';
-    if (type === 'forecast') header = ' 預報位置';
-
+    let header = type === 'current' ? ' 實時位置 ' : (type === 'forecast' ? ' 預報位置' : ' 過去位置');
     const timeLabel = (type === 'past' || type === 'current') ? `時間: ${timeValue}` : `預報時效: +${data.f_time}h`;
-    const wind = data['wind'] !== undefined ? data['wind'] : '--';
-    const pres = data['minimum central pressure'] !== undefined ? data['minimum central pressure'] : '--';
-
-    return `
-        <div class="popup-title">${header}</div>
-        <div class="popup-item"> ${timeLabel}</div>
-        <div class="popup-item"> 位置: ${data.lat.toFixed(1)}°N, ${data.lng.toFixed(1)}°E</div>
-        <div class="popup-item"> 強度: ${intensityNames[data.intensity] || data.intensity}</div>
-        <div class="popup-item"> 近中心最大風速: ${wind} kph</div>
-        <div class="popup-item"> 中心氣壓: ${pres} hPa</div>
-    `;
+    return `<div class="popup-title">${header}</div><div class="popup-item"> ${timeLabel}</div><div class="popup-item"> 位置: ${data.lat.toFixed(1)}°N, ${data.lng.toFixed(1)}°E</div><div class="popup-item"> 強度: ${intensityNames[data.intensity] || data.intensity}</div><div class="popup-item"> 近中心最大風速: ${data.wind || '--'} kph</div><div class="popup-item"> 中心氣壓: ${data['minimum central pressure'] || '--'} hPa</div>`;
 }
 
-// 繪製警戒圓函數
 function drawAlertCircles(layer) {
     const center = turf.point([MACAO_COORDS[1], MACAO_COORDS[0]]);
-    
-    // 澳門星號
-    const starIcon = L.divIcon({
-        html: '<div style="color: #E64A19; font-size: 24px; text-shadow: 0 0 3px rgba(0,0,0,0.5);">★</div>',
-        className: 'circle-label',
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
-    });
+    const starIcon = L.divIcon({ html: '<div style="color: #E64A19; font-size: 24px; text-shadow: 0 0 3px rgba(0,0,0,0.5);">★</div>', className: 'circle-label', iconSize: [24, 24], iconAnchor: [12, 12] });
     L.marker(MACAO_COORDS, { icon: starIcon, zIndexOffset: 1000 }).addTo(layer);
-
     ALERT_CIRCLES.forEach(circle => {
-        // 繪製虛線圓圈
-        const circleGeo = turf.circle(center, circle.r, { units: 'kilometers' });
-        L.geoJSON(circleGeo, {
-            style: {
-                color: circle.color,
-                weight: 1.2,
-                fillColor: 'transparent',
-                dashArray: '5, 8',
-                opacity: circle.opacity
-            }
-        }).addTo(layer);
-
-        // 在圓圈正南側（180度）標註文字
+        L.geoJSON(turf.circle(center, circle.r, { units: 'kilometers' }), { style: { color: circle.color, weight: 1.2, fillColor: 'transparent', dashArray: '5, 8', opacity: circle.opacity } }).addTo(layer);
         const labelPos = turf.destination(center, circle.r, 180, { units: 'kilometers' });
-        const labelCoords = [labelPos.geometry.coordinates[1], labelPos.geometry.coordinates[0]];
-
-        const textIcon = L.divIcon({
-            html: `<div style="color: ${circle.color}; font-weight: bold; font-size: 11px; white-space: nowrap; opacity: ${Math.min(1, circle.opacity + 0.3)}; text-shadow: 1px 1px 1px white;">${circle.r}km</div>`,
-            className: 'circle-label',
-            iconSize: [60, 20],
-            iconAnchor: [30, -2]
-        });
-        L.marker(labelCoords, { icon: textIcon }).addTo(layer);
+        L.marker([labelPos.geometry.coordinates[1], labelPos.geometry.coordinates[0]], { icon: L.divIcon({ html: `<div style="color: ${circle.color}; font-weight: bold; font-size: 11px; white-space: nowrap; opacity: ${Math.min(1, circle.opacity + 0.3)}; text-shadow: 1px 1px 1px white;">${circle.r}km</div>`, className: 'circle-label', iconSize: [60, 20], iconAnchor: [30, -2] }) }).addTo(layer);
     });
 }
 
 async function init() {
     trackLayer.clearLayers();
-    
-    // 初始化時先畫警戒圓
     drawAlertCircles(trackLayer);
-
     const target = document.getElementById('tc-selector').value;
     try {
-        const [pRes, fRes] = await Promise.all([
-            fetch(`past_track_${target}.csv`),
-            fetch(`forecast_track_${target}.csv`)
-        ]);
+        const [pRes, fRes] = await Promise.all([fetch(`past_track_${target}.csv`).catch(()=>({text:()=>""})), fetch(`forecast_track_${target}.csv`).catch(()=>({text:()=>""}))]);
         const pastData = parseCSV(await pRes.text());
         const forecastData = parseCSV(await fRes.text());
         if(pastData.length === 0) return;
-
         const latestPoint = pastData[pastData.length - 1];
-        const historicalPoints = pastData.slice(0, pastData.length - 1);
-
         let coneParts = [];
         let prevPt = turf.point([latestPoint.lng, latestPoint.lat]);
         let prevR = 0;
         forecastData.forEach((d) => {
-            let currPt = turf.point([d.lng, d.lat]);
-            let currR = (d.f_time / 24) * 100;
+            let currPt = turf.point([d.lng, d.lat]), currR = (d.f_time / 24) * 100;
             if (currR > 0) coneParts.push(turf.circle(currPt, currR, {units: 'kilometers'}));
             coneParts.push(getSegmentSector(prevPt, prevR, currPt, currR));
             prevPt = currPt; prevR = currR;
@@ -303,48 +294,71 @@ async function init() {
             for (let i = 1; i < coneParts.length; i++) { combined = turf.union(combined, coneParts[i]); }
             L.geoJSON(combined, { style: { color: '#e67e22', weight: 1, dashArray: '5, 5', fillColor: '#f1c40f', fillOpacity: 0.12 } }).addTo(trackLayer);
         }
-
-        const pPoints = pastData.map(d => [d.lat, d.lng]);
-        L.polyline(pPoints, { color: '#32CD32', weight: 4 }).addTo(trackLayer);
-
+        L.polyline(pastData.map(d => [d.lat, d.lng]), { color: '#32CD32', weight: 4 }).addTo(trackLayer);
         let fPath = [[latestPoint.lat, latestPoint.lng]];
         forecastData.forEach(d => fPath.push([d.lat, d.lng]));
         getSmoothLine(fPath, { color: '#3498db', weight: 3, dashArray: '8, 8' }).addTo(trackLayer);
-
-        historicalPoints.forEach((d) => {
-            L.circleMarker([d.lat, d.lng], { 
-                radius: 5, 
-                fillColor: intensityColors[d.intensity] || intensityColors.default, 
-                color: "#444", 
-                weight: 1, 
-                fillOpacity: 1 
-            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'past'));
-        });
-
-        L.circleMarker([latestPoint.lat, latestPoint.lng], { 
-            radius: 8, 
-            fillColor: intensityColors[latestPoint.intensity] || intensityColors.default, 
-            color: "#000", 
-            weight: 2.5, 
-            fillOpacity: 1 
-        }).addTo(trackLayer)
-          .bindPopup(createPopupContent(latestPoint, 'current'))
-          .bringToFront();
-
-        forecastData.forEach(d => {
-            L.circleMarker([d.lat, d.lng], { 
-                radius: 5, 
-                fillColor: intensityColors[d.intensity] || intensityColors.default, 
-                color: "#333", 
-                weight: 1, 
-                fillOpacity: 0.8 
-            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast'));
-        });
-
-        map.fitBounds(pPoints.concat(fPath), { padding: [50, 50] });
+        pastData.slice(0, -1).forEach(d => L.circleMarker([d.lat, d.lng], { radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, color: "#444", weight: 1, fillOpacity: 1 }).addTo(trackLayer).bindPopup(createPopupContent(d, 'past')));
+        L.circleMarker([latestPoint.lat, latestPoint.lng], { radius: 8, fillColor: intensityColors[latestPoint.intensity] || intensityColors.default, color: "#000", weight: 2.5, fillOpacity: 1 }).addTo(trackLayer).bindPopup(createPopupContent(latestPoint, 'current')).bringToFront();
+        forecastData.forEach(d => L.circleMarker([d.lat, d.lng], { radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, color: "#333", weight: 1, fillOpacity: 0.8 }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast')));
+        map.fitBounds(pastData.map(d=>[d.lat, d.lng]).concat(fPath), { padding: [50, 50] });
     } catch (e) { console.error("數據加載失敗:", e); }
 }
 init();
+
+var radarActive = false, apiData = {}, mapFrames = [], animationPosition = 0, animationTimer = false, currentLayer = null, isLoading = false, layerCache = {};
+function formatTime(timestamp) { return new Date(timestamp * 1000).toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false }); }
+function createRadarLayer(frame) { return new L.TileLayer(apiData.host + frame.path + '/256/{z}/{x}/{y}/2/1_1.png', { tileSize: 256, opacity: 0.001, maxNativeZoom: 7, maxZoom: 16 }); }
+function stopRadar() { if (animationTimer) { clearTimeout(animationTimer); animationTimer = false; document.getElementById("playBtn").innerHTML = "▶"; return true; } return false; }
+function playRadar() { animationTimer = true; document.getElementById("playBtn").innerHTML = "⏸"; showRadarFrame(animationPosition + 1); }
+function playStopRadar() { if (!stopRadar()) playRadar(); }
+
+function showRadarFrame(position) {
+    if (isLoading || !radarActive) return;
+    position = (position + mapFrames.length) % mapFrames.length;
+    var frame = mapFrames[position];
+    document.getElementById("radar-timestamp").innerHTML = formatTime(frame.time);
+    var oldLayer = currentLayer;
+    if (layerCache[position]) {
+        if (oldLayer) oldLayer.setOpacity(0);
+        layerCache[position].setOpacity(0.8);
+        currentLayer = layerCache[position];
+        animationPosition = position;
+        if (animationTimer) animationTimer = setTimeout(playRadar, 500);
+        return;
+    }
+    isLoading = true;
+    var newLayer = createRadarLayer(frame);
+    newLayer.on('load', function() {
+        if (!radarActive) { newLayer.setOpacity(0); isLoading = false; return; }
+        newLayer.setOpacity(0.8);
+        if (oldLayer) oldLayer.setOpacity(0);
+        layerCache[position] = newLayer;
+        currentLayer = newLayer;
+        animationPosition = position;
+        isLoading = false;
+        if (animationTimer) animationTimer = setTimeout(playRadar, 500);
+    });
+    newLayer.addTo(map);
+}
+
+function toggleRadar() {
+    radarActive = !radarActive;
+    const btn = document.getElementById('radar-btn');
+    const ui = document.getElementById('radar-ui-container');
+    if (radarActive) {
+        btn.innerText = '隱藏雷達'; btn.style.background = '#e74c3c'; ui.style.display = 'block';
+        if (mapFrames.length === 0) {
+            var apiRequest = new XMLHttpRequest();
+            apiRequest.open("GET", "https://api.rainviewer.com/public/weather-maps.json", true);
+            apiRequest.onload = function() { if (apiRequest.status >= 200 && apiRequest.status < 400) { apiData = JSON.parse(apiRequest.response); mapFrames = apiData.radar.past; showRadarFrame(mapFrames.length - 1); } };
+            apiRequest.send();
+        } else { showRadarFrame(animationPosition); }
+    } else {
+        btn.innerText = '顯示雷達'; btn.style.background = '#3498db'; ui.style.display = 'none';
+        stopRadar(); if (currentLayer) currentLayer.setOpacity(0);
+    }
+}
 </script>
 </body>
 </html>
