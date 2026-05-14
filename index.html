@@ -18,11 +18,12 @@
             z-index: 1100; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
+        /* 預報圖按鈕樣式 */
         .img-btn {
             background: #e67e22;
             color: white;
             border: none;
-            padding: 5px 12px;
+            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 13px;
@@ -115,13 +116,9 @@
         }
         .radar-legend-labels { display: flex; justify-content: space-between; font-size: 10px; color: #666; font-weight: bold; }
 
-        /* ================= 手機版排版修復 ================= */
         @media screen and (max-width: 768px) {
             .header b { font-size: 13px; }
-            /* 雷達面板上移，避免與底部的圖例撞車 */
             .radar-ui { bottom: 220px; width: 240px; padding: 10px; }
-            
-            /* 圖例優化：在手機上使用兩列顯示 */
             .professional-legend { 
                 width: calc(100% - 40px); 
                 left: 10px; right: 10px; 
@@ -145,9 +142,13 @@
     <div>
         <b>🌀 MMC 熱帶氣旋預報GIS（測試版）</b>
     </div>
-    <select id="tc-selector" onchange="init()">
-        <option value="A">黑格比</option>
-    </select>
+    <div style="display: flex; align-items: center;">
+        <select id="tc-selector" onchange="init()">
+            <option value="A">黑格比</option>
+        </select>
+        <!-- 預報圖按鈕恢復 -->
+        <button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>
+    </div>
 </div>
 
 <select id="map-type-selector" onchange="changeMapType(this.value)">
@@ -202,7 +203,7 @@
 </div>
 
 <script>
-/* 腳本完全還原，不作任何邏輯變更 */
+/* 腳本完全還原，維持原有邏輯 */
 const baseLayers = {
     light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
     dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
