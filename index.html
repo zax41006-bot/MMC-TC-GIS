@@ -8,7 +8,6 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     <style>
-        /* ================= 原有 TC GIS 樣式 ================= */
         :root { --panel-bg: rgba(255, 255, 255, 0.95); --accent-color: #2c3e50; }
         body { margin: 0; font-family: 'Segoe UI', "Microsoft JhengHei", sans-serif; overflow: hidden; }
 
@@ -32,8 +31,7 @@
             transition: background 0.3s;
         }
         .img-btn:hover { background: #d35400; }
-        
-        /* 地圖類型選擇器樣式 (移至最上方) */
+
         #map-type-selector {
             position: absolute;
             top: 60px;
@@ -50,7 +48,6 @@
             font-weight: bold;
         }
 
-        /* 雷達按鈕樣式 (下推至選擇器下方) */
         .radar-toggle-btn {
             position: absolute;
             top: 105px;
@@ -99,7 +96,6 @@
             .img-btn { padding: 4px 8px; font-size: 11px; }
         }
 
-        /* ================= 雷達面板樣式 (左下角) ================= */
         .radar-ui {
             position: absolute;
             bottom: 20px; left: 10px;
@@ -132,7 +128,7 @@
 <div class="header">
     <div>
         <b>🌀 MMC 熱帶氣旋預報GIS（測試版）</b>
-        <button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>
+        <!--<button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>-->
     </div>
     <select id="tc-selector" onchange="init()">
         <option value="A">黑格比</option>
@@ -189,7 +185,6 @@
 </div>
 
 <script>
-// ================= 地圖切換邏輯 =================
 const baseLayers = {
     light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
     dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
