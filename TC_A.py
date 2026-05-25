@@ -2,6 +2,8 @@ import time
 import os
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import cartopy.crs as ccrs
@@ -15,13 +17,11 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import tcmarkers
 
-# 路徑設置
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 PAST_CSV = os.path.join(BASE_PATH, "past_track_A.csv")
 FORE_CSV = os.path.join(BASE_PATH, "forecast_track_A.csv")
 OUTPUT_IMG = os.path.join(BASE_PATH, "TC_forecast_A.png")
 
-# 字體與基礎設置
 plt.rcParams["font.family"] = ["Microsoft YaHei", "SimHei", "Microsoft JhengHei"]
 plt.rcParams["axes.unicode_minus"] = False
 
@@ -59,14 +59,13 @@ def draw_chart():
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
         ax.add_feature(cfeature.OCEAN, facecolor="#E3F2FD", zorder=0)
-        ax.add_feature(cfeature.COASTLINE, linewidth=1.0, color='#4E342E', zorder=2)
-        
-        # --- 網格線設置：統一為每 5 度一條線 ---
+
+        ax.add_feature(cfeature.COASTLINE, linewidth=1.0, edgecolor='#4E342E', zorder=2)
+
         gl = ax.gridlines(draw_labels=True, linewidth=0.3, color='#757575', alpha=0.6, linestyle='--', zorder=1)
         gl.top_labels = gl.right_labels = False
         gl.xlocator = mticker.MultipleLocator(5)
         gl.ylocator = mticker.MultipleLocator(5)
-        # --------------------------------------
 
         for r_km, col, alph in MACAO_ALERT_CIRCLES:
             lat_r, lon_r = r_km/LAT_TO_KM, r_km/lon_to_km_factor(MACAO_LAT)
