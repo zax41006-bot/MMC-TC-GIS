@@ -18,52 +18,24 @@
             z-index: 1100; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        /* 預報圖按鈕樣式 */
         .img-btn {
-            background: #e67e22;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            margin-left: 10px;
-            font-weight: bold;
-            transition: background 0.3s;
+            background: #e67e22; color: white; border: none; padding: 6px 12px;
+            border-radius: 4px; cursor: pointer; font-size: 13px; margin-left: 10px;
+            font-weight: bold; transition: background 0.3s;
         }
         .img-btn:hover { background: #d35400; }
 
         #map-type-selector {
-            position: absolute;
-            top: 60px;
-            right: 10px;
-            z-index: 1005;
-            background: white;
-            border: 1px solid #ccc;
-            padding: 8px;
-            border-radius: 4px;
-            font-size: 14px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            outline: none;
-            width: 130px;
-            font-weight: bold;
+            position: absolute; top: 60px; right: 10px; z-index: 1005;
+            background: white; border: 1px solid #ccc; padding: 8px; border-radius: 4px;
+            font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); outline: none; width: 130px; font-weight: bold;
         }
 
-        .radar-toggle-btn {
-            position: absolute;
-            top: 105px;
-            right: 10px;
-            z-index: 1005;
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            cursor: pointer;
-            font-size: 14px;
-            width: 130px;
+        .weather-layer-selector {
+            position: absolute; top: 105px; right: 10px; z-index: 1005;
+            background: #3498db; color: white; border: none; padding: 8px; border-radius: 4px;
+            font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer;
+            font-size: 14px; width: 130px; outline: none;
         }
 
         #tc-selector { background: #34495e; color: white; border: 1px solid #7f8c8d; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
@@ -91,25 +63,16 @@
         .circle-label { background: none !important; border: none !important; box-shadow: none !important; }
 
         .radar-ui {
-            position: absolute;
-            bottom: 20px; left: 10px;
-            background: var(--panel-bg);
-            padding: 12px;
-            border-radius: 8px;
-            z-index: 1000;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.15);
-            border: 1px solid #ddd;
-            width: 260px;
-            display: none;
+            position: absolute; bottom: 20px; left: 10px; background: var(--panel-bg);
+            padding: 12px; border-radius: 8px; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.15);
+            border: 1px solid #ddd; width: 260px; display: none;
         }
-        .radar-controls {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #eee;
-        }
-        #radar-timestamp { font-size: 16px; font-weight: 600; color: #3498db; }
-        .radar-buttons { display: flex; gap: 6px; }
-        .radar-buttons button { width: 34px; height: 32px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; font-size: 15px; }
+        .radar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+        #timestamp { font-size: 16px; font-weight: 600; color: #3498db; }
+        .buttons { display: flex; gap: 6px; }
+        .buttons button { width: 34px; height: 32px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; font-size: 15px; }
         
+        #radar-legend-subpanel { display: block; }
         .radar-legend-bar {
             height: 10px; width: 100%; border-radius: 2px; margin-bottom: 5px;
             background: linear-gradient(to right, #827b69 0%, #ded097 19%, #88ddee 20%, #005588 46%, #ffee00 46.5%, #ff8100 59%, #ff4400 60%, #5d0000 72%, #ffaaff 73.5%, #ff4eff 86%, #ffffff 86.5%, #ffffff 99%, #00ff00 100%);
@@ -119,19 +82,8 @@
         @media screen and (max-width: 768px) {
             .header b { font-size: 13px; }
             .radar-ui { bottom: 220px; width: 240px; padding: 10px; }
-            .professional-legend { 
-                width: calc(100% - 40px); 
-                left: 10px; right: 10px; 
-                bottom: 15px; 
-                padding: 10px;
-                max-height: 180px;
-                overflow-y: auto;
-            }
-            .legend-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 2px 10px;
-            }
+            .professional-legend { width: calc(100% - 40px); left: 10px; right: 10px; bottom: 15px; padding: 10px; max-height: 180px; overflow-y: auto; }
+            .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; }
             .legend-title { font-size: 12px; grid-column: span 2; margin-top: 5px; }
         }
     </style>
@@ -139,9 +91,7 @@
 <body>
 
 <div class="header">
-    <div>
-        <b>🌀 MMC TC-GIS（測試版）</b>
-    </div>
+    <div><b>🌀 MMC TC-GIS（測試版）</b></div>
     <div style="display: flex; align-items: center;">
         <select id="tc-selector" onchange="init()">
             <option value="A">熱帶低氣壓</option>
@@ -155,7 +105,12 @@
     <option value="dark">深色地圖</option>
     <option value="satellite">衛星地圖</option>
 </select>
-<button id="radar-btn" class="radar-toggle-btn" onclick="toggleRadar()">顯示雷達</button>
+
+<select id="weather-layer-selector" class="weather-layer-selector" onchange="handleWeatherLayerChange(this.value)">
+    <option value="none">純地圖</option>
+    <option value="radar">顯示雷達</option>
+    <option value="satellite">顯示衛星雲圖</option>
+</select>
 
 <div id="mapid"></div>
 
@@ -166,19 +121,21 @@
 
 <div id="radar-ui-container" class="radar-ui">
     <div class="radar-controls">
-        <span id="radar-timestamp">--:--</span>
-        <div class="radar-buttons">
-            <button onclick="stopRadar(); showRadarFrame(animationPosition - 1);">‹</button>
-            <button id="playBtn" onclick="playStopRadar();">▶</button>
-            <button onclick="stopRadar(); showRadarFrame(animationPosition + 1);">›</button>
+        <span id="timestamp">--:--</span>
+        <div class="buttons">
+            <button onclick="stop(); showFrame(animationPosition - 1);">‹</button>
+            <button id="playBtn" onclick="playStop();">▶</button>
+            <button onclick="stop(); showFrame(animationPosition + 1);">›</button>
         </div>
     </div>
-    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:5px;">
-        <span>雷達圖例</span><span>dBZ</span>
-    </div>
-    <div class="radar-legend-bar"></div>
-    <div class="radar-legend-labels">
-        <span>5</span><span>15</span><span>25</span><span>35</span><span>45</span><span>55</span><span>65</span><span>75</span>
+    <div id="radar-legend-subpanel">
+        <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:5px;">
+            <span>雷達圖例</span><span>dBZ</span>
+        </div>
+        <div class="radar-legend-bar"></div>
+        <div class="radar-legend-labels">
+            <span>5</span><span>15</span><span>25</span><span>35</span><span>45</span><span>55</span><span>65</span><span>75</span>
+        </div>
     </div>
 </div>
 
@@ -202,7 +159,7 @@
 </div>
 
 <script>
-/* 腳本完全還原，維持原有邏輯 */
+
 const baseLayers = {
     light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
     dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
@@ -319,59 +276,184 @@ async function init() {
 }
 init();
 
-var radarActive = false, apiData = {}, mapFrames = [], animationPosition = 0, animationTimer = false, currentLayer = null, isLoading = false, layerCache = {};
-function formatTime(timestamp) { return new Date(timestamp * 1000).toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false }); }
-function createRadarLayer(frame) { return new L.TileLayer(apiData.host + frame.path + '/256/{z}/{x}/{y}/2/1_1.png', { tileSize: 256, opacity: 0.001, maxNativeZoom: 7, maxZoom: 16 }); }
-function stopRadar() { if (animationTimer) { clearTimeout(animationTimer); animationTimer = false; document.getElementById("playBtn").innerHTML = "▶"; return true; } return false; }
-function playRadar() { animationTimer = true; document.getElementById("playBtn").innerHTML = "⏸"; showRadarFrame(animationPosition + 1); }
-function playStopRadar() { if (!stopRadar()) playRadar(); }
+var apiData = {};
+var mapFrames = [];
+var animationPosition = 0;
+var animationTimer = false;
+var currentLayer = null;
+var isLoading = false;
+var layerCache = {};
+var radarVisible = false;
+var satVisible = false; 
 
-function showRadarFrame(position) {
-    if (isLoading || !radarActive) return;
+function formatTime(timestamp) { 
+    return new Date(timestamp * 1000).toLocaleTimeString('zh-HK', { 
+        hour: '2-digit', minute: '2-digit', hour12: false 
+    }); 
+}
+
+function createRadarLayer(frame) { 
+    return new L.TileLayer(apiData.host + frame.path + '/256/{z}/{x}/{y}/2/1_1.png', { 
+        tileSize: 256, opacity: 0.001, maxNativeZoom: 7, maxZoom: 16 
+    }); 
+}
+
+function stop() { 
+    if (animationTimer) { 
+        clearTimeout(animationTimer); 
+        animationTimer = false; 
+        document.getElementById("playBtn").innerHTML = "▶"; 
+        return true; 
+    } 
+    return false; 
+}
+
+function play() { 
+    animationTimer = true; 
+    document.getElementById("playBtn").innerHTML = "⏸"; 
+    showFrame(animationPosition + 1); 
+}
+
+function playStop() { if (!stop()) play(); }
+
+function updateTimestamp(frame) { 
+    document.getElementById("timestamp").innerHTML = formatTime(frame.time); 
+}
+
+function showFrame(position) {
+    if (isLoading || mapFrames.length === 0) return;
+    
     position = (position + mapFrames.length) % mapFrames.length;
     var frame = mapFrames[position];
-    document.getElementById("radar-timestamp").innerHTML = formatTime(frame.time);
+    updateTimestamp(frame);
+
+    if (typeof updateSatelliteLayer === 'function') {
+        updateSatelliteLayer(frame);
+    }
+
     var oldLayer = currentLayer;
+    
     if (layerCache[position]) {
         if (oldLayer) oldLayer.setOpacity(0);
-        layerCache[position].setOpacity(0.8);
+
+        var targetOpacity = (satVisible || !radarVisible) ? 0 : 0.8;
+        layerCache[position].setOpacity(targetOpacity);
+        
         currentLayer = layerCache[position];
         animationPosition = position;
-        if (animationTimer) animationTimer = setTimeout(playRadar, 500);
+        if (animationTimer) animationTimer = setTimeout(play, 500);
         return;
     }
+    
     isLoading = true;
     var newLayer = createRadarLayer(frame);
     newLayer.on('load', function() {
-        if (!radarActive) { newLayer.setOpacity(0); isLoading = false; return; }
-        newLayer.setOpacity(0.8);
+        var targetOpacity = (satVisible || !radarVisible) ? 0 : 0.8;
+        newLayer.setOpacity(targetOpacity);
+        
         if (oldLayer) oldLayer.setOpacity(0);
         layerCache[position] = newLayer;
         currentLayer = newLayer;
         animationPosition = position;
         isLoading = false;
-        if (animationTimer) animationTimer = setTimeout(playRadar, 500);
+        if (animationTimer) animationTimer = setTimeout(play, 500);
     });
     newLayer.addTo(map);
 }
 
-function toggleRadar() {
-    radarActive = !radarActive;
-    const btn = document.getElementById('radar-btn');
-    const ui = document.getElementById('radar-ui-container');
-    if (radarActive) {
-        btn.innerText = '隱藏雷達'; btn.style.background = '#e74c3c'; ui.style.display = 'block';
-        if (mapFrames.length === 0) {
-            var apiRequest = new XMLHttpRequest();
-            apiRequest.open("GET", "https://api.rainviewer.com/public/weather-maps.json", true);
-            apiRequest.onload = function() { if (apiRequest.status >= 200 && apiRequest.status < 400) { apiData = JSON.parse(apiRequest.response); mapFrames = apiData.radar.past; showRadarFrame(mapFrames.length - 1); } };
-            apiRequest.send();
-        } else { showRadarFrame(animationPosition); }
+function getGibsTime(timestamp) {
+    var d = new Date((timestamp - 5400) * 1000); 
+    var minutes = Math.floor(d.getUTCMinutes() / 10) * 10;
+    d.setUTCMinutes(minutes);
+    d.setUTCSeconds(0);
+    return d.toISOString().split('.')[0] + 'Z'; 
+}
+
+var satLayerCache = {};
+var currentSatLayer = null;
+
+function updateSatelliteLayer(frame) {
+    if (!satVisible || !frame) return;
+    var exactTimeStr = getGibsTime(frame.time);
+    
+    if (satLayerCache[exactTimeStr]) {
+        if (currentSatLayer && currentSatLayer !== satLayerCache[exactTimeStr]) {
+            currentSatLayer.setOpacity(0);
+        }
+        satLayerCache[exactTimeStr].setOpacity(0.75);
+        currentSatLayer = satLayerCache[exactTimeStr];
     } else {
-        btn.innerText = '顯示雷達'; btn.style.background = '#3498db'; ui.style.display = 'none';
-        stopRadar(); if (currentLayer) currentLayer.setOpacity(0);
+        var himawariWorldview = L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/' +
+            'Himawari_AHI_Band13_Clean_Infrared/default/' +
+            '{time}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png', {
+            time: exactTimeStr, 
+            tileSize: 256,
+            transparent: true,
+            opacity: 0.75,
+            attribution: 'Imagery &copy; NASA GIBS / JMA',
+            maxNativeZoom: 6,
+            maxZoom: 18,
+            zIndex: 10,
+            keepBuffer: 4,
+            updateWhenIdle: false,
+            crossOrigin: true
+        });
+        
+        himawariWorldview.addTo(map);
+        satLayerCache[exactTimeStr] = himawariWorldview;
+        
+        if (currentSatLayer) { currentSatLayer.setOpacity(0); }
+        currentSatLayer = himawariWorldview;
+    }
+}
+
+function handleWeatherLayerChange(value) {
+    stop();
+    radarVisible = false;
+    satVisible = false;
+
+    document.getElementById('radar-ui-container').style.display = 'none';
+
+    if (currentLayer) { currentLayer.setOpacity(0); }
+    if (currentSatLayer) { currentSatLayer.setOpacity(0); currentSatLayer = null; }
+
+    Object.values(satLayerCache).forEach(layer => { if (map.hasLayer(layer)) map.removeLayer(layer); });
+    satLayerCache = {};
+
+    var legendSubpanel = document.getElementById('radar-legend-subpanel');
+
+    if (value === 'radar') {
+        radarVisible = true;
+        legendSubpanel.style.display = 'block'; 
+        document.getElementById('radar-ui-container').style.display = 'block';
+        loadOrShowData();
+    } 
+    else if (value === 'satellite') {
+        satVisible = true;
+        legendSubpanel.style.display = 'none';  
+        document.getElementById('radar-ui-container').style.display = 'block';
+        loadOrShowData();
+    }
+}
+
+function loadOrShowData() {
+    if (mapFrames.length === 0) {
+        var apiRequest = new XMLHttpRequest();
+        apiRequest.open("GET", "https://api.rainviewer.com/public/weather-maps.json", true);
+        apiRequest.onload = function() {
+            if (apiRequest.status >= 200 && apiRequest.status < 400) {
+                apiData = JSON.parse(apiRequest.response);
+                mapFrames = apiData.radar.past; 
+                animationPosition = mapFrames.length - 1;
+                showFrame(animationPosition);
+            }
+        };
+        apiRequest.send();
+    } else {
+        showFrame(animationPosition);
     }
 }
 </script>
+
 </body>
 </html>
