@@ -152,8 +152,8 @@
         <div class="legend-row"><div class="dot" style="background:#eee8aa;"></div> TD 熱帶低氣壓</div>
         <div class="legend-row"><div class="dot" style="background:#3498db;"></div> TS 熱帶風暴</div>
         <div class="legend-row"><div class="dot" style="background:#2ecc71;"></div> STS 強烈熱帶風暴</div>
-        <div class="legend-row"><div class="dot" style="background:#f1c40f;"></div> TY 颱風</div>
-        <div class="legend-row"><div class="dot" style="background:#e67e22;"></div> STY 強颱風</div>
+        <div class="legend-row"><div class="dot" style="background:#ffa200f6;"></div> TY 颱風</div>
+        <div class="legend-row"><div class="dot" style="background:#ff0000;"></div> STY 強颱風</div>
         <div class="legend-row"><div class="dot" style="background:#9b59b6;"></div> SUTY 超強颱風</div>
     </div>
 </div>
@@ -171,7 +171,7 @@ function changeMapType(type) {
     baseLayers[type].addTo(map);
 }
 
-const intensityColors = { "LPA": "#dcdcdc", "EX": "#dcdcdc", "TD": "#eee8aa", "TS": "#3498db", "STS": "#2ecc71", "TY": "#f1c40f", "STY": "#e67e22", "SUTY": "#9b59b6", "default": "#666" };
+const intensityColors = { "LPA": "#dcdcdc", "EX": "#dcdcdc", "TD": "#eee8aa", "TS": "#3498db", "STS": "#2ecc71", "TY": "#ffa200f6", "STY": "#ff0000", "SUTY": "#9b59b6", "default": "#666" };
 const intensityNames = { "LPA": "低壓區", "TD": "熱帶低氣壓", "TS": "熱帶風暴", "STS": "強烈熱帶風暴", "TY": "颱風", "STY": "強颱風", "SUTY": "超強颱風", "EX": "溫帶氣旋" };
 const MACAO_COORDS = [22.17, 113.55]; 
 const ALERT_CIRCLES = [ { r: 100, color: "#A0A0A0", opacity: 0.3 }, { r: 200, color: "#808080", opacity: 0.4 }, { r: 400, color: "#808080", opacity: 0.5 }, { r: 600, color: "#A0A0A0", opacity: 0.6 }, { r: 800, color: "#FF4D4D", opacity: 0.7 } ];
