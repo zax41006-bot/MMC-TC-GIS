@@ -1,5 +1,5 @@
 ﻿f_time,lat,lng,intensity,wind,minimum central pressure,type
-12hr,19.5,128.5,TY,130,970,forecast
+12hr,20.0,128.5,TY,130,970,forecast
 24hr,21.5,127.5,TY,145,960,forecast
 36hr,23.5,126.5,TY,145,960,forecast
 48hr,25.5,126.5,TY,145,960,forecast
