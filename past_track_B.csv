@@ -1,4 +1,4 @@
-datetime,lat,lng,intensity,wind,minimum central pressure,type
+﻿datetime,lat,lng,intensity,wind,minimum central pressure,type
 3/6/2026 11:00,16.5,115.4,LPA,30,1003,past
 3/6/2026 14:00,16.6,115.4,LPA,30,1003,past
 3/6/2026 17:00,16.5,114.9,LPA,30,1003,past
@@ -8,4 +8,5 @@ datetime,lat,lng,intensity,wind,minimum central pressure,type
 4/6/2026 05:00,17.9,116.2,LPA,35,1002,past
 4/6/2026 08:00,18.0,117.2,LPA,35,1002,past
 4/6/2026 11:00,19.3,118.0,TD,45,1000,past
-4/6/2026 14:00,19.6,118.3,TD,45,1000,current 
+4/6/2026 14:00,19.6,118.3,TD,45,1000,past
+4/6/2026 17:00,19.9,118.8,TD,55,999,current
