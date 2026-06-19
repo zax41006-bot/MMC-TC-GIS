@@ -1,3 +1,4 @@
 ﻿datetime,lat,lng,intensity,wind,minimum central pressure,type
 19/6/2026 08:00,12.9,143.3,TD,55,1004,past
-19/6/2026 11:00,13.0,142.6,TD,55,1004,current
+19/6/2026 11:00,13.0,142.6,TD,55,1004,past
+19/6/2026 14:00,13.0,141.8,TD,55,1004,current
