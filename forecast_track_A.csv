@@ -5,5 +5,5 @@
 48hr,16.5,132.2,STS,90,985,forecast
 60hr,17.0,130.5,TY,120,975,forecast
 72hr,18.1,127.5,TY,120,975,forecast
-96hr,19.3,125.3,STS,100,982,forecast
-120hr,20.2,124.8,STS,90,985,forecast
+96hr,19.3,125.3,STS,100,985,forecast
+120hr,20.2,124.8,TS,85,990,forecast
