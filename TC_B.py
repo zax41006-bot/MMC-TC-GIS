@@ -55,7 +55,7 @@ def draw_chart():
             forecast_data.append([row['f_time'], row['lng'], row['lat'], row['wind'], h, row['minimum central pressure'], row.get('type', 'tropical')])
 
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
-        ax.set_extent([105.0, 145.0, 10.0, 45.0], crs=ccrs.PlateCarree())
+        ax.set_extent([105.0, 155.0, 5.0, 50.0], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
         ax.add_feature(cfeature.OCEAN, facecolor="#E3F2FD", zorder=0)
@@ -102,7 +102,7 @@ def draw_chart():
         _, c_col, c_m = get_intensity_info(curr[3])
         ax.plot(curr[1], curr[2], marker=c_m, ms=8.5, color=c_col, mec='k', mew=1.1, zorder=10)
 
-        fig.text(0.5, 0.94, "東海南部的熱帶低氣壓 路徑預報圖", ha='center', fontsize=22, fontweight='bold')
+        fig.text(0.5, 0.94, "關島以東海域的熱帶低氣壓 路徑預報圖", ha='center', fontsize=22, fontweight='bold')
         fig.text(0.5, 0.905, f"預報時效：{max(f_hs)} 小時", ha='center', fontsize=14, color='#424242')
 
         info_txt = f"現時位置資料\n時間：{curr[0]}\n強度：{get_intensity_info(curr[3])[0]}\n近中心最大風速：{curr[3]}kph  中心氣壓：{curr[4]}hPa\n現時位置：{curr[2]:.1f}°N, {curr[1]:.1f}°E"
