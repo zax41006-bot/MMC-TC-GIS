@@ -97,9 +97,8 @@
             <option value="all" selected>顯示全部熱帶氣旋</option>
             <option value="A">米克拉</option>
             <option value="B">熱帶低氣壓</option>
-            <!--<option>暫無熱帶氣旋</option>-->
-        </select>
-        <button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>
+            </select>
+        <button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>
     </div>
 </div>
 
@@ -326,6 +325,16 @@ async function init() {
     drawAlertCircles(trackLayer);
     const target = document.getElementById('tc-selector').value;
     
+    // 修改點：新增按鈕顯示邏輯判斷
+    const forecastBtn = document.getElementById('forecast-btn');
+    if (forecastBtn) {
+        if (target === 'all') {
+            forecastBtn.style.display = 'none';
+        } else {
+            forecastBtn.style.display = 'inline-block';
+        }
+    }
+
     let allBounds = []; // 收集所有氣旋的坐標用於自動縮放
     
     try {
