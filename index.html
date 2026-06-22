@@ -94,8 +94,9 @@
     <div><b>🌀 MMC TC-GIS（測試版）</b></div>
     <div style="display: flex; align-items: center;">
         <select id="tc-selector" onchange="init()">
+            <option value="all" selected>顯示全部熱帶氣旋</option>
             <option value="A">米克拉</option>
-            <!--<option value="B">/</option>-->
+            <option value="B">熱帶低氣壓</option>
             <!--<option>暫無熱帶氣旋</option>-->
         </select>
         <button class="img-btn" onclick="toggleForecastImg()">預報路徑圖</button>
@@ -162,6 +163,9 @@
 
 <script>
 
+// 所有熱帶氣旋ID列表，新增氣旋時在這裡補充即可
+const TC_LIST = ['A', 'B'];
+
 const baseLayers = {
     light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'),
     dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'),
@@ -187,7 +191,9 @@ function toggleForecastImg() {
     const target = document.getElementById('tc-selector').value;
     const overlay = document.getElementById('img-overlay');
     const img = document.getElementById('forecast-img-src');
-    img.src = `TC_forecast_${target}.png?t=${new Date().getTime()}`;
+    // 全部模式下預設顯示第一個氣旋的預報圖，可按需調整
+    const imgId = target === 'all' ? TC_LIST[0] : target;
+    img.src = `TC_forecast_${imgId}.png?t=${new Date().getTime()}`;
     overlay.style.display = 'flex';
 }
 
@@ -242,15 +248,21 @@ function drawAlertCircles(layer) {
     });
 }
 
-async function init() {
-    trackLayer.clearLayers();
-    drawAlertCircles(trackLayer);
-    const target = document.getElementById('tc-selector').value;
+/**
+ * 繪製單個熱帶氣旋
+ * @param {string} tcId 氣旋ID
+ * @returns {Array} 該氣旋所有坐標點，用於邊界計算
+ */
+async function drawSingleTC(tcId) {
     try {
-        const [pRes, fRes] = await Promise.all([fetch(`past_track_${target}.csv`).catch(()=>({text:()=>""})), fetch(`forecast_track_${target}.csv`).catch(()=>({text:()=>""}))]);
+        const [pRes, fRes] = await Promise.all([
+            fetch(`past_track_${tcId}.csv`).catch(()=>({text:()=>""})), 
+            fetch(`forecast_track_${tcId}.csv`).catch(()=>({text:()=>""}))
+        ]);
         const pastData = parseCSV(await pRes.text());
         const forecastData = parseCSV(await fRes.text());
-        if(pastData.length === 0) return;
+        if(pastData.length === 0) return [];
+
         const latestPoint = pastData[pastData.length - 1];
         let coneParts = [];
         let prevPt = turf.point([latestPoint.lng, latestPoint.lat]);
@@ -263,18 +275,77 @@ async function init() {
         });
         if(coneParts.length > 0) {
             let combined = coneParts[0];
-            for (let i = 1; i < coneParts.length; i++) { combined = turf.union(combined, coneParts[i]); }
-            L.geoJSON(combined, { style: { color: '#e67e22', weight: 1, dashArray: '5, 5', fillColor: '#f1c40f', fillOpacity: 0.12 } }).addTo(trackLayer);
+            for (let i = 1; i < coneParts.length; i++) { 
+                combined = turf.union(combined, coneParts[i]); 
+            }
+            L.geoJSON(combined, { 
+                style: { color: '#e67e22', weight: 1, dashArray: '5, 5', fillColor: '#f1c40f', fillOpacity: 0.12 } 
+            }).addTo(trackLayer);
         }
+
+        // 過去路徑
         L.polyline(pastData.map(d => [d.lat, d.lng]), { color: '#32CD32', weight: 4 }).addTo(trackLayer);
+
+        // 預報路徑
         let fPath = [[latestPoint.lat, latestPoint.lng]];
         forecastData.forEach(d => fPath.push([d.lat, d.lng]));
         getSmoothLine(fPath, { color: '#3498db', weight: 3, dashArray: '8, 8' }).addTo(trackLayer);
-        pastData.slice(0, -1).forEach(d => L.circleMarker([d.lat, d.lng], { radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, color: "#444", weight: 1, fillOpacity: 1 }).addTo(trackLayer).bindPopup(createPopupContent(d, 'past')));
-        L.circleMarker([latestPoint.lat, latestPoint.lng], { radius: 8, fillColor: intensityColors[latestPoint.intensity] || intensityColors.default, color: "#000", weight: 2.5, fillOpacity: 1 }).addTo(trackLayer).bindPopup(createPopupContent(latestPoint, 'current')).bringToFront();
-        forecastData.forEach(d => L.circleMarker([d.lat, d.lng], { radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, color: "#333", weight: 1, fillOpacity: 0.8 }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast')));
-        map.fitBounds(pastData.map(d=>[d.lat, d.lng]).concat(fPath), { padding: [50, 50] });
-    } catch (e) { console.error("數據加載失敗:", e); }
+
+        // 過去點位
+        pastData.slice(0, -1).forEach(d => 
+            L.circleMarker([d.lat, d.lng], { 
+                radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, 
+                color: "#444", weight: 1, fillOpacity: 1 
+            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'past'))
+        );
+
+        // 實時位置
+        L.circleMarker([latestPoint.lat, latestPoint.lng], { 
+            radius: 8, fillColor: intensityColors[latestPoint.intensity] || intensityColors.default, 
+            color: "#000", weight: 2.5, fillOpacity: 1 
+        }).addTo(trackLayer).bindPopup(createPopupContent(latestPoint, 'current')).bringToFront();
+
+        // 預報點位
+        forecastData.forEach(d => 
+            L.circleMarker([d.lat, d.lng], { 
+                radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, 
+                color: "#333", weight: 1, fillOpacity: 0.8 
+            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast'))
+        );
+
+        // 返回所有點用於邊界計算
+        return pastData.map(d=>[d.lat, d.lng]).concat(fPath);
+    } catch (e) {
+        console.error(`加載熱帶氣旋 ${tcId} 失敗:`, e);
+        return [];
+    }
+}
+
+async function init() {
+    trackLayer.clearLayers();
+    drawAlertCircles(trackLayer);
+    const target = document.getElementById('tc-selector').value;
+    
+    let allBounds = []; // 收集所有氣旋的坐標用於自動縮放
+    
+    try {
+        // 根據選項決定繪製單個還是全部
+        const tcIds = target === 'all' ? TC_LIST : [target];
+        
+        for (const tcId of tcIds) {
+            const points = await drawSingleTC(tcId);
+            if (points.length > 0) {
+                allBounds = allBounds.concat(points);
+            }
+        }
+        
+        // 自動適配視圖
+        if (allBounds.length > 0) {
+            map.fitBounds(allBounds, { padding: [50, 50] });
+        }
+    } catch (e) { 
+        console.error("數據加載失敗:", e); 
+    }
 }
 init();
 
