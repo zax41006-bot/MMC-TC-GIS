@@ -34,4 +34,5 @@ datetime,lat,lng,intensity,wind,minimum central pressure,type
 23/6/2026 08:00,18.8,125.2,SUTY,195,930,past
 23/6/2026 11:00,19.1,124.9,SUTY,185,935,past
 23/6/2026 14:00,19.2,124.7,STY,175,945,past
-23/6/2026 17:00,19.3,124.7,STY,175,945,current
+23/6/2026 17:00,19.3,124.7,STY,175,945,past
+23/6/2026 20:00,19.5,124.7,STY,165,948,current
