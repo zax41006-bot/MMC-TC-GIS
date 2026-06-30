@@ -95,10 +95,12 @@
     <div style="display: flex; align-items: center;">
         <select id="tc-selector" onchange="init()">
             <option value="all" selected>所有熱帶氣旋</option>
-            <option value="A">米克拉</option>
-            <option value="B">海高斯</option>
-            </select>
-        <!--<button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>-->
+            <option value="A">海神</option>
+            <!--<option value="B">-</option>-->
+        </select>
+        <button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>
+        <!-- 新增：詳細預報PDF按鈕 -->
+        <button id="tcp-btn" class="img-btn" style="display: none; background: #27ae60;" onclick="toggleTCPdf()">詳細預報PDF</button>
     </div>
 </div>
 
@@ -194,6 +196,14 @@ function toggleForecastImg() {
     const imgId = target === 'all' ? TC_LIST[0] : target;
     img.src = `TC_forecast_${imgId}.png?t=${new Date().getTime()}`;
     overlay.style.display = 'flex';
+}
+
+// 新增：打開詳細預報PDF
+function toggleTCPdf() {
+    const target = document.getElementById('tc-selector').value;
+    if (target === 'all') return;
+    // 新窗口打開對應氣旋的TCP預報PDF，自帶時間戳避免緩存
+    window.open(`TCP_${target}.pdf?t=${new Date().getTime()}`, '_blank');
 }
 
 function parseCSV(text) {
@@ -325,14 +335,14 @@ async function init() {
     drawAlertCircles(trackLayer);
     const target = document.getElementById('tc-selector').value;
     
-    // 修改點：新增按鈕顯示邏輯判斷
+    // 按鈕顯示邏輯：單個氣旋時顯示預報圖和PDF按鈕，全部模式隱藏
     const forecastBtn = document.getElementById('forecast-btn');
+    const tcpBtn = document.getElementById('tcp-btn');
     if (forecastBtn) {
-        if (target === 'all') {
-            forecastBtn.style.display = 'none';
-        } else {
-            forecastBtn.style.display = 'inline-block';
-        }
+        forecastBtn.style.display = target === 'all' ? 'none' : 'inline-block';
+    }
+    if (tcpBtn) {
+        tcpBtn.style.display = target === 'all' ? 'none' : 'inline-block';
     }
 
     let allBounds = []; // 收集所有氣旋的坐標用於自動縮放
