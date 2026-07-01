@@ -95,11 +95,11 @@
     <div style="display: flex; align-items: center;">
         <select id="tc-selector" onchange="init()">
             <option value="all" selected>所有熱帶氣旋</option>
-            <option value="A">潛在熱帶氣旋</option>
+            <option value="A">熱帶低氣壓</option>
             <option value="B">熱帶低氣壓</option>
         </select>
         <button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>
-        <!--<button id="tcp-btn" class="img-btn" style="display: none; background: #27ae60;" onclick="toggleTCPdf()">詳細預報PDF</button>-->
+        <button id="tcp-btn" class="img-btn" style="display: none; background: #27ae60;" onclick="toggleTCPdf()">詳細預報PDF</button>
     </div>
 </div>
 
@@ -163,7 +163,7 @@
 
 <script>
 
-// 所有熱帶氣旋ID列表，新增氣旋時在這裡補充即可
+// 所有熱帶氣旋ID列表，包含A和B
 const TC_LIST = ['A', 'B'];
 
 const baseLayers = {
@@ -197,10 +197,10 @@ function toggleForecastImg() {
     overlay.style.display = 'flex';
 }
 
-// 新增：打開詳細預報PDF
+// 打開詳細預報PDF (僅供A使用，B不調用)
 function toggleTCPdf() {
     const target = document.getElementById('tc-selector').value;
-    if (target === 'all') return;
+    if (target === 'all' || target === 'B') return;
     // 新窗口打開對應氣旋的TCP預報PDF，自帶時間戳避免緩存
     window.open(`TCP_${target}.pdf?t=${new Date().getTime()}`, '_blank');
 }
@@ -334,14 +334,16 @@ async function init() {
     drawAlertCircles(trackLayer);
     const target = document.getElementById('tc-selector').value;
     
-    // 按鈕顯示邏輯：單個氣旋時顯示預報圖和PDF按鈕，全部模式隱藏
+    // 按鈕顯示邏輯
     const forecastBtn = document.getElementById('forecast-btn');
     const tcpBtn = document.getElementById('tcp-btn');
     if (forecastBtn) {
+        // 全部模式隱藏，單獨A或B顯示預報路徑圖
         forecastBtn.style.display = target === 'all' ? 'none' : 'inline-block';
     }
     if (tcpBtn) {
-        tcpBtn.style.display = target === 'all' ? 'none' : 'inline-block';
+        // 詳細預報PDF僅對A氣旋顯示
+        tcpBtn.style.display = (target === 'A') ? 'inline-block' : 'none';
     }
 
     let allBounds = []; // 收集所有氣旋的坐標用於自動縮放
