@@ -4,6 +4,6 @@
 36hr,12.7,156.2,STS,110,980,forecast
 48hr,13.0,153.5,TY,130,970,forecast
 60hr,13.1,151.4,STY,150,955,forecast
-72hr,13.1,149.8,SuTY,185,935,forecast
-96hr,13.8,146.5,SuTY,205,925,forecast
-120hr,15.5,141.5,SuTY,215,915,forecast
+72hr,13.1,149.8,SUTY,185,935,forecast
+96hr,13.8,146.5,SUTY,205,925,forecast
+120hr,15.5,141.5,SUTY,215,915,forecast
