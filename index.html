@@ -121,8 +121,8 @@
     <div><b>🌀 MMC TC-GIS（測試版）</b></div>
     <div style="display: flex; align-items: center;">
         <select id="tc-selector" onchange="init()">
-            <!--<option value="all" selected>所有熱帶氣旋</option>-->
-            <!--<option value="A">美莎克</option>-->
+            <option value="all" selected>所有熱帶氣旋</option>
+            <option value="A">潛在熱帶氣旋</option>
             <option value="B">巴威</option>
         </select>
         <button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>
@@ -197,8 +197,9 @@
 <script>
 
 // 熱帶氣旋ID與名稱映射
-const TC_LIST = ['B'];
+const TC_LIST = ['A', 'B'];
 const TC_NAMES = {
+    'A': '潛在熱帶氣旋',
     'B': '巴威'
 };
 
