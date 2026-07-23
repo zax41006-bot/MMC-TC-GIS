@@ -277,10 +277,50 @@ function getSmoothLine(points, options = {}) {
     return L.geoJSON(curved, { style: options });
 }
 
-function createPopupContent(data, type) {
+// [新增] 時間計算輔助函數：將 "DD/MM/YYYY HH:mm" 加上指定小時數
+function calculateForecastTime(baseTimeStr, addHours) {
+    if (!baseTimeStr) return `+${addHours}h`;
+    
+    // 解析 "23/7/2026 08:00"
+    const parts = baseTimeStr.trim().split(' ');
+    if (parts.length !== 2) return `+${addHours}h`;
+    
+    const dateParts = parts[0].split('/');
+    const timeParts = parts[1].split(':');
+    if (dateParts.length !== 3 || timeParts.length !== 2) return `+${addHours}h`;
+
+    // JavaScript 的 Date 月份是 0-11，所以 month 需要 -1
+    const date = new Date(dateParts[2], parseInt(dateParts[1]) - 1, dateParts[0], timeParts[0], timeParts[1]);
+    
+    // 加上預報小時
+    date.setHours(date.getHours() + parseFloat(addHours));
+
+    // 格式化回字串
+    const d = date.getDate();
+    const m = date.getMonth() + 1;
+    const y = date.getFullYear();
+    const h = date.getHours().toString().padStart(2, '0');
+    const min = date.getMinutes().toString().padStart(2, '0');
+
+    return `${d}/${m}/${y} ${h}:${min} (+${addHours}h)`;
+}
+
+// [修改] 更新彈出視窗生成函數，加入 baseTime 參數
+function createPopupContent(data, type, baseTimeStr = null) {
     const timeValue = data.datetime || data.time || 'N/A';
     let header = type === 'current' ? ' 實時位置 ' : (type === 'forecast' ? ' 預報位置' : ' 過去位置');
-    const timeLabel = (type === 'past' || type === 'current') ? `時間: ${timeValue}` : `預報時效: +${data.f_time}h`;
+    
+    // 自動計算預報時間
+    let timeLabel = '';
+    if (type === 'past' || type === 'current') {
+        timeLabel = `時間: ${timeValue}`;
+    } else {
+        if (baseTimeStr && data.f_time) {
+            timeLabel = `預報時間: ${calculateForecastTime(baseTimeStr, data.f_time)}`;
+        } else {
+            timeLabel = `預報時效: +${data.f_time}h`;
+        }
+    }
     
     let distanceStr = '--';
     if (typeof data.lat === 'number' && typeof data.lng === 'number') {
@@ -311,7 +351,7 @@ function drawAlertCircles(layer) {
 }
 
 /**
- * 繪製單個熱帶氣旋，並記錄實時距離
+ * [修改] 繪製單個熱帶氣旋，並記錄實時距離
  */
 async function drawSingleTC(tcId) {
     try {
@@ -327,6 +367,9 @@ async function drawSingleTC(tcId) {
         }
 
         const latestPoint = pastData[pastData.length - 1];
+        
+        // 抓取最後一筆 (current) 的 datetime 作為預報推算的基準
+        const baseTimeStr = latestPoint.datetime;
         
         // 計算該氣旋實時位置與澳門的距離
         if (latestPoint.lat !== undefined && latestPoint.lng !== undefined) {
@@ -379,12 +422,12 @@ async function drawSingleTC(tcId) {
             color: "#000", weight: 2.5, fillOpacity: 1 
         }).addTo(trackLayer).bindPopup(createPopupContent(latestPoint, 'current')).bringToFront();
 
-        // 預報點位
+        // 預報點位 (將 baseTimeStr 傳入)
         forecastData.forEach(d => 
             L.circleMarker([d.lat, d.lng], { 
                 radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, 
                 color: "#333", weight: 1, fillOpacity: 0.8 
-            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast'))
+            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast', baseTimeStr))
         );
 
         return pastData.map(d=>[d.lat, d.lng]).concat(fPath);
