@@ -55,7 +55,10 @@ def draw_chart():
             forecast_data.append([row['f_time'], row['lng'], row['lat'], row['wind'], h, row['minimum central pressure'], row.get('type', 'tropical')])
 
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
-        ax.set_extent([105.5, 125.5, 14.5, 31.5], crs=ccrs.PlateCarree())
+        
+        # 地圖顯示邊界範圍
+        lon_min, lon_max, lat_min, lat_max = 107.5, 119.5, 19.0, 29.0
+        ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
         ax.add_feature(cfeature.OCEAN, facecolor="#E3F2FD", zorder=0)
@@ -69,14 +72,19 @@ def draw_chart():
 
         for r_km, col, alph in MACAO_ALERT_CIRCLES:
             lat_r, lon_r = r_km/LAT_TO_KM, r_km/lon_to_km_factor(MACAO_LAT)
+            # 圓圈圖層降至 zorder=2
             ax.add_patch(Ellipse((MACAO_LON, MACAO_LAT), 2*lon_r, 2*lat_r, fc='none', ec=col, alpha=alph, lw=0.8, transform=ccrs.PlateCarree(), zorder=2))
 
+            # 維持正南方 (270度)
             angle = np.radians(270)
             tx = MACAO_LON + lon_r * np.cos(angle)
             ty = MACAO_LAT + lat_r * np.sin(angle)
 
-            ax.text(tx, ty, f"{r_km}km", color=col, fontsize=8.5, fontweight='bold', alpha=alph+0.3,
-                    ha='center', va='top', transform=ccrs.PlateCarree(), zorder=15)
+            # 嚴格判斷：只有標籤在當前地圖緯度範圍內 (lat_min ~ lat_max) 時才繪製
+            # 超出地圖邊界的標籤（如 400km, 600km, 800km）會自動忽略，徹底解決重疊圖例的問題
+            if lat_min <= ty <= lat_max and lon_min <= tx <= lon_max:
+                ax.text(tx, ty, f"{r_km}km", color=col, fontsize=8.5, fontweight='bold', alpha=alph+0.3,
+                        ha='center', va='top', transform=ccrs.PlateCarree(), zorder=2)
 
         ax.plot(MACAO_LON, MACAO_LAT, '*', color="#E64A19", ms=10, mec='#3E2723', mew=1.2, zorder=12)
 
@@ -95,14 +103,17 @@ def draw_chart():
             _, ln, lt, wd, h, _, cyc = d
             _, col, m = get_intensity_info(wd, cyc)
             if h in {24, 48, 72, 96, 120}:
-                ax.plot(ln, lt, marker=m, ms=7.5, color=col, mec='k', mew=0.8, zorder=10)
+                #ax.plot(ln, lt, marker=m, ms=7.5, color=col, mec='k', mew=0.8, zorder=10)
+                ax.plot(ln, lt, marker=m, ms=10.0, color=col, mec='k', mew=0.8, zorder=10)
             else:
-                ax.plot(ln, lt, marker='x', ms=4.5, color="#1976D2", mew=1.0, zorder=9)
+                ax.plot(ln, lt, marker='x', ms=6, color="#1976D2", mew=1.0, zorder=9)
+                #ax.plot(ln, lt, marker='x', ms=4.5, color="#1976D2", mew=1.0, zorder=9)
 
         _, c_col, c_m = get_intensity_info(curr[3])
-        ax.plot(curr[1], curr[2], marker=c_m, ms=8.5, color=c_col, mec='k', mew=1.1, zorder=10)
+        #ax.plot(curr[1], curr[2], marker=c_m, ms=8.5, color=c_col, mec='k', mew=1.1, zorder=10)
+        ax.plot(curr[1], curr[2], marker=c_m, ms=12.0, color=c_col, mec='k', mew=1.1, zorder=10)
 
-        fig.text(0.5, 0.94, "颱風“紅霞” 路徑預報圖", ha='center', fontsize=22, fontweight='bold')
+        fig.text(0.5, 0.94, "強颱風“紅霞” 路徑預報圖", ha='center', fontsize=22, fontweight='bold')
         fig.text(0.5, 0.905, f"預報時效：{max(f_hs)} 小時", ha='center', fontsize=14, color='#424242')
 
         info_txt = f"現時位置資料\n時間：{curr[0]}\n強度：{get_intensity_info(curr[3])[0]}\n近中心最大風速：{curr[3]}kph  中心氣壓：{curr[4]}hPa\n現時位置：{curr[2]:.1f}°N, {curr[1]:.1f}°E"
