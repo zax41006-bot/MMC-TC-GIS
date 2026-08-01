@@ -55,7 +55,7 @@ def draw_chart():
             forecast_data.append([row['f_time'], row['lng'], row['lat'], row['wind'], h, row['minimum central pressure'], row.get('type', 'tropical')])
 
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
-        ax.set_extent([110.0, 145.0, 7.5, 32.5], crs=ccrs.PlateCarree())
+        ax.set_extent([110.0, 130.0, 12.0, 28.0], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
         ax.add_feature(cfeature.OCEAN, facecolor="#E3F2FD", zorder=0)
