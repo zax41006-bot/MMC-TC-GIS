@@ -232,8 +232,14 @@ function toggleForecastImg() {
     const target = document.getElementById('tc-selector').value;
     const overlay = document.getElementById('img-overlay');
     const img = document.getElementById('forecast-img-src');
-    const imgId = target === 'all' ? TC_LIST[0] : target;
-    img.src = `TC_forecast_${imgId}.png?t=${new Date().getTime()}`;
+    
+    // 【修改點 1】：判斷如果是 all，則請求 TC-ALL.png，否則請求對應的 TC_forecast_X.png
+    if (target === 'all') {
+        img.src = `TC-ALL.png?t=${new Date().getTime()}`;
+    } else {
+        img.src = `TC_forecast_${target}.png?t=${new Date().getTime()}`;
+    }
+    
     overlay.style.display = 'flex';
 }
 
@@ -470,8 +476,10 @@ async function init() {
     // 按鈕顯示邏輯
     const forecastBtn = document.getElementById('forecast-btn');
     const tcpBtn = document.getElementById('tcp-btn');
+    
     if (forecastBtn) {
-        forecastBtn.style.display = target === 'all' ? 'none' : 'inline-block';
+        // 【修改點 2】：移除針對 target === 'all' 隱藏按鈕的邏輯，強制所有情況顯示按鈕
+        forecastBtn.style.display = 'inline-block';
     }
     if (tcpBtn) {
         tcpBtn.style.display = (target === 'A') ? 'inline-block' : 'none';
