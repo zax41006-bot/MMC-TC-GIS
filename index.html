@@ -346,8 +346,18 @@ function createPopupContent(data, type, baseTimeStr = null) {
 
 function drawAlertCircles(layer) {
     const center = turf.point([MACAO_COORDS[1], MACAO_COORDS[0]]);
-    const starIcon = L.divIcon({ html: '<div style="color: #E64A19; font-size: 24px; text-shadow: 0 0 3px rgba(0,0,0,0.5);">★</div>', className: 'circle-label', iconSize: [24, 24], iconAnchor: [12, 12] });
-    L.marker(MACAO_COORDS, { icon: starIcon, zIndexOffset: 1000 }).addTo(layer);
+    
+    // 獲取澳門邊界 GeoJSON 並以紅線繪製（取代原本的紅星）
+    fetch('https://nominatim.openstreetmap.org/search?q=Macau&format=geojson&polygon_geojson=1&limit=1')
+        .then(res => res.json())
+        .then(data => {
+            if (data && data.features && data.features.length > 0) {
+                L.geoJSON(data.features[0].geometry, {
+                    style: { color: 'red', weight: 2, fillOpacity: 0, opacity: 1 }
+                }).addTo(layer);
+            }
+        }).catch(err => console.error("獲取澳門邊界失敗: ", err));
+
     ALERT_CIRCLES.forEach(circle => {
         L.geoJSON(turf.circle(center, circle.r, { units: 'kilometers' }), { style: { color: circle.color, weight: 1.2, fillColor: 'transparent', dashArray: '5, 8', opacity: circle.opacity } }).addTo(layer);
         const labelPos = turf.destination(center, circle.r, 180, { units: 'kilometers' });
