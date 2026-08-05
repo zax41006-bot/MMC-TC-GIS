@@ -57,7 +57,7 @@ def draw_chart():
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
         
         # 地圖顯示邊界範圍
-        lon_min, lon_max, lat_min, lat_max = 112.0, 117.0, 20.5, 24.5
+        lon_min, lon_max, lat_min, lat_max = 107.5, 119.0, 16.5, 24.5
         ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
