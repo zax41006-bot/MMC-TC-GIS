@@ -57,7 +57,7 @@ def draw_chart():
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
         
         # 地圖顯示邊界範圍
-        lon_min, lon_max, lat_min, lat_max = 107.5, 119.5, 19.0, 29.0
+        lon_min, lon_max, lat_min, lat_max = 106.5, 121.5, 16.0, 29.0
         ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
@@ -113,7 +113,7 @@ def draw_chart():
         #ax.plot(curr[1], curr[2], marker=c_m, ms=8.5, color=c_col, mec='k', mew=1.1, zorder=10)
         ax.plot(curr[1], curr[2], marker=c_m, ms=12.0, color=c_col, mec='k', mew=1.1, zorder=10)
 
-        fig.text(0.5, 0.94, "熱帶低氣壓“紅霞” 路徑預報圖", ha='center', fontsize=22, fontweight='bold')
+        fig.text(0.5, 0.94, "北部灣的熱帶低氣壓 路徑預報圖", ha='center', fontsize=22, fontweight='bold')
         fig.text(0.5, 0.905, f"預報時效：{max(f_hs)} 小時", ha='center', fontsize=14, color='#424242')
 
         info_txt = f"現時位置資料\n時間：{curr[0]}\n強度：{get_intensity_info(curr[3])[0]}\n近中心最大風速：{curr[3]}kph  中心氣壓：{curr[4]}hPa\n現時位置：{curr[2]:.1f}°N, {curr[1]:.1f}°E"
