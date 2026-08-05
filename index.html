@@ -124,7 +124,8 @@
             <option value="all" selected>所有熱帶氣旋</option>
             <!--<option value="A">紅霞</option>-->
             <option value="B">白海豚</option>
-            <option value="C">熱帶低氣壓</option>
+            <option value="C">鯨魚</option>
+            <option value="D">燦鴻</option>
         </select>
         <button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>
         <!--<button id="tcp-btn" class="img-btn" style="display: none; background: #27ae60;" onclick="toggleTCPdf()">詳細預報PDF</button>-->
@@ -198,10 +199,11 @@
 <script>
 
 // 熱帶氣旋ID與名稱映射
-const TC_LIST = [ 'B', 'C'];
+const TC_LIST = [ 'B', 'C', 'D'];
 const TC_NAMES = {
     'B': '白海豚',
-    'C': '熱帶低氣壓'
+    'C': '鯨魚',
+    'D': '燦鴻'
 };
 
 const baseLayers = {
