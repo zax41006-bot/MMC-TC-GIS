@@ -29,11 +29,6 @@ TC_LIST = [
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_B.csv")
     },
     {
-        "name": "鯨魚",
-        "past_csv": os.path.join(BASE_PATH, "past_track_C.csv"),
-        "fore_csv": os.path.join(BASE_PATH, "forecast_track_C.csv")
-    },
-    {
         "name": "燦鴻",
         "past_csv": os.path.join(BASE_PATH, "past_track_D.csv"),
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_D.csv")
