@@ -29,6 +29,11 @@ TC_LIST = [
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_B.csv")
     },
     {
+        "name": "潛在熱帶氣旋的低壓區",
+        "past_csv": os.path.join(BASE_PATH, "past_track_A.csv"),
+        "fore_csv": os.path.join(BASE_PATH, "forecast_track_A.csv")
+    },
+    {
         "name": "燦鴻",
         "past_csv": os.path.join(BASE_PATH, "past_track_D.csv"),
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_D.csv")
@@ -46,7 +51,7 @@ def lon_to_km_factor(lat): return 111.320 * np.cos(np.radians(lat))
 
 def get_intensity_info(wind, cyc_type="tropical"):
     if cyc_type == "EX": return "溫帶氣旋", "#BDBDBD", tcmarkers.HU
-    if wind < 41: return "低壓區/溫帶氣旋", "#BDBDBD", tcmarkers.HU
+    if wind < 41: return "低壓區", "#BDBDBD", tcmarkers.HU
     elif 41 <= wind <= 62: return "熱帶低氣壓", "#FFF176", tcmarkers.HU
     elif 63 <= wind <= 87: return "熱帶風暴", "#64B5F6", tcmarkers.HU
     elif 88 <= wind <= 117: return "強烈熱帶風暴", "#4CAF50", tcmarkers.HU
