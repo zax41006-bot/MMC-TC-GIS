@@ -124,7 +124,7 @@
             <option value="all" selected>所有熱帶氣旋</option>
             <!--<option value="A">紅霞</option>-->
             <option value="B">白海豚</option>
-            <option value="C">鯨魚</option>
+            <option value="A">潛在熱帶氣旋的低壓區</option>
             <option value="D">燦鴻</option>
         </select>
         <button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>
@@ -199,10 +199,10 @@
 <script>
 
 // 熱帶氣旋ID與名稱映射
-const TC_LIST = [ 'B', 'C', 'D'];
+const TC_LIST = [ 'B', 'A', 'D'];
 const TC_NAMES = {
     'B': '白海豚',
-    'C': '鯨魚',
+    'A': '潛在熱帶氣旋的低壓區',
     'D': '燦鴻'
 };
 
