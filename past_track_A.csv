@@ -1,3 +1,4 @@
 datetime,lat,lng,intensity,wind,minimum central pressure,type
 7/8/2026 14:00,19.8,108.0,LPA,40,1001,past
-7/8/2026 17:00,19.8,108.2,LPA,40,1001,current
+7/8/2026 17:00,19.8,108.2,LPA,40,1001,past
+7/8/2026 20:00,19.8,108.5,LPA,40,1001,current
