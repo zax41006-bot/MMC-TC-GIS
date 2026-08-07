@@ -43,4 +43,5 @@ datetime,lat,lng,intensity,wind,minimum central pressure,type
 6/8/2026 20:00,26.5,131.5,TY,145,955,past
 7/8/2026 02:00,26.9,130.5,TY,145,955,past
 7/8/2026 08:00,27.2,129.0,TY,145,955,past
-7/8/2026 14:00,26.8,128.1,STY,165,945,current
+7/8/2026 14:00,26.8,128.1,STY,165,945,past
+7/8/2026 20:00,27.2,127.3,STY,155,950,current
