@@ -29,11 +29,6 @@ TC_LIST = [
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_B.csv")
     },
     {
-        "name": "潛在熱帶氣旋的低壓區",
-        "past_csv": os.path.join(BASE_PATH, "past_track_A.csv"),
-        "fore_csv": os.path.join(BASE_PATH, "forecast_track_A.csv")
-    },
-    {
         "name": "燦鴻",
         "past_csv": os.path.join(BASE_PATH, "past_track_D.csv"),
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_D.csv")
