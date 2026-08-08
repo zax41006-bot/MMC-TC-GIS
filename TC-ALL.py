@@ -32,6 +32,16 @@ TC_LIST = [
         "name": "燦鴻",
         "past_csv": os.path.join(BASE_PATH, "past_track_D.csv"),
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_D.csv")
+    },
+    {
+        "name": "熱帶低氣壓",
+        "past_csv": os.path.join(BASE_PATH, "past_track_E.csv"),
+        "fore_csv": os.path.join(BASE_PATH, "forecast_track_E.csv")
+    },
+    {
+        "name": "熱帶低氣壓",
+        "past_csv": os.path.join(BASE_PATH, "past_track_F.csv"),
+        "fore_csv": os.path.join(BASE_PATH, "forecast_track_F.csv")
     }
 ]
 
@@ -59,7 +69,7 @@ def draw_chart():
     try:
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
         # 設定一個夠大的範圍以容納多個氣旋，可根據需要調整
-        ax.set_extent([100.0, 180.0, 0.0, 60.0], crs=ccrs.PlateCarree())
+        ax.set_extent([90.0, 180.0, 0.0, 70.0], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
         ax.add_feature(cfeature.OCEAN, facecolor="#E3F2FD", zorder=0)
