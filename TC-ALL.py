@@ -34,7 +34,7 @@ TC_LIST = [
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_D.csv")
     },
     {
-        "name": "熱帶低氣壓",
+        "name": "琵鷺",
         "past_csv": os.path.join(BASE_PATH, "past_track_E.csv"),
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_E.csv")
     },
