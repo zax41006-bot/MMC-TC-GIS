@@ -126,7 +126,8 @@
             <option value="B">白海豚</option>
             <option value="D">燦鴻</option>
             <option value="E">琵鷺</option>
-            <option value="F">熱帶低氣壓</option>
+            <option value="F">未命名</option>
+            <option value="G">未命名</option>
         </select>
         <button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>
         <!--<button id="tcp-btn" class="img-btn" style="display: none; background: #27ae60;" onclick="toggleTCPdf()">詳細預報PDF</button>-->
@@ -200,12 +201,13 @@
 <script>
 
 // 熱帶氣旋ID與名稱映射
-const TC_LIST = [ 'B', 'D', 'E', 'F'];
+const TC_LIST = [ 'B', 'D', 'E', 'F', 'G'];
 const TC_NAMES = {
     'B': '白海豚',
     'D': '燦鴻',
     'E': '琵鷺',
-    'F': '熱帶低氣壓'
+    'F': '未命名',
+    'G': '未命名'
 };
 
 const baseLayers = {
