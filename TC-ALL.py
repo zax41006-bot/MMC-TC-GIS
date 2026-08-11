@@ -24,11 +24,6 @@ OUTPUT_IMG = os.path.join(BASE_PATH, "TC-ALL.png")
 # 在這裡設定你要合併顯示的所有熱帶氣旋
 TC_LIST = [
     {
-        "name": "白海豚",
-        "past_csv": os.path.join(BASE_PATH, "past_track_B.csv"),
-        "fore_csv": os.path.join(BASE_PATH, "forecast_track_B.csv")
-    },
-    {
         "name": "燦鴻",
         "past_csv": os.path.join(BASE_PATH, "past_track_D.csv"),
         "fore_csv": os.path.join(BASE_PATH, "forecast_track_D.csv")
@@ -40,8 +35,8 @@ TC_LIST = [
     },
     {
         "name": "未命名",
-        "past_csv": os.path.join(BASE_PATH, "past_track_F.csv"),
-        "fore_csv": os.path.join(BASE_PATH, "forecast_track_F.csv")
+        "past_csv": os.path.join(BASE_PATH, "past_track_G.csv"),
+        "fore_csv": os.path.join(BASE_PATH, "forecast_track_G.csv")
     }
 ]
 
