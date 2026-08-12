@@ -79,10 +79,9 @@
         }
         .radar-legend-labels { display: flex; justify-content: space-between; font-size: 10px; color: #666; font-weight: bold; }
 
-        /* 距離面板 (右上角選單下方) */
         #distance-panel {
             position: absolute;
-            top: 150px;   /* 105px (天氣選單底部) + 5px 間距 */
+            top: 150px;
             right: 10px;
             z-index: 1005;
             background: rgba(255, 255, 255, 0.95);
@@ -122,15 +121,9 @@
     <div style="display: flex; align-items: center;">
         <select id="tc-selector" onchange="init()">
             <option value="all" selected>所有熱帶氣旋</option>
-            <!--<option value="A">紅霞</option>-->
-            <option value="B">白海豚</option>
-            <option value="D">燦鴻</option>
-            <option value="E">琵鷺</option>
-            <option value="F">未命名</option>
             <option value="G">浪卡</option>
         </select>
         <button id="forecast-btn" class="img-btn" style="display: none;" onclick="toggleForecastImg()">預報路徑圖</button>
-        <!--<button id="tcp-btn" class="img-btn" style="display: none; background: #27ae60;" onclick="toggleTCPdf()">詳細預報PDF</button>-->
     </div>
 </div>
 
@@ -146,7 +139,6 @@
     <option value="satellite">衛星雲圖</option>
 </select>
 
-<!-- 距離面板 -->
 <div id="distance-panel">
     <strong>距離澳門</strong>
     無資料
@@ -200,30 +192,23 @@
 
 <script>
 
-// 熱帶氣旋ID與名稱映射
-const TC_LIST = [ 'B', 'D', 'E', 'F', 'G'];
-const TC_NAMES = {
-    'B': '白海豚',
-    'D': '燦鴻',
-    'E': '琵鷺',
-    'F': '未命名',
+// 代號清單直接為字母
+const TC_LIST = ['G'];
+
+// 用於距離面板顯示名稱（已移除字母標註）
+const TC_DISPLAY_NAMES = {
     'G': '浪卡'
 };
 
 const baseLayers = {
     light: L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 22,
-        maxNativeZoom: 20,
-        detectRetina: true
+        maxZoom: 22, maxNativeZoom: 20, detectRetina: true
     }),
     dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 22,
-        maxNativeZoom: 20,
-        detectRetina: true
+        maxZoom: 22, maxNativeZoom: 20, detectRetina: true
     }),
     satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 22,
-        maxNativeZoom: 19
+        maxZoom: 22, maxNativeZoom: 19
     })
 };
 
@@ -242,7 +227,6 @@ L.control.zoom({ position: 'topleft' }).addTo(map);
 baseLayers.light.addTo(map);
 let trackLayer = L.layerGroup().addTo(map);
 
-// 儲存每個氣旋的實時距離
 let tcDistances = {};
 
 function toggleForecastImg() {
@@ -250,20 +234,12 @@ function toggleForecastImg() {
     const overlay = document.getElementById('img-overlay');
     const img = document.getElementById('forecast-img-src');
     
-    // 【修改點 1】：判斷如果是 all，則請求 TC-ALL.png，否則請求對應的 TC_forecast_X.png
     if (target === 'all') {
         img.src = `TC-ALL.png?t=${new Date().getTime()}`;
     } else {
         img.src = `TC_forecast_${target}.png?t=${new Date().getTime()}`;
     }
-    
     overlay.style.display = 'flex';
-}
-
-function toggleTCPdf() {
-    const target = document.getElementById('tc-selector').value;
-    if (target === 'all' || target === 'B') return;
-    window.open(`TCP_${target}.pdf?t=${new Date().getTime()}`, '_blank');
 }
 
 function parseCSV(text) {
@@ -299,56 +275,28 @@ function getSmoothLine(points, options = {}) {
     return L.geoJSON(curved, { style: options });
 }
 
-// [新增] 時間計算輔助函數：將 "DD/MM/YYYY HH:mm" 加上指定小時數
 function calculateForecastTime(baseTimeStr, addHours) {
     if (!baseTimeStr) return `+${addHours}h`;
-    
-    // 解析 "23/7/2026 08:00"
     const parts = baseTimeStr.trim().split(' ');
     if (parts.length !== 2) return `+${addHours}h`;
-    
     const dateParts = parts[0].split('/');
     const timeParts = parts[1].split(':');
     if (dateParts.length !== 3 || timeParts.length !== 2) return `+${addHours}h`;
 
-    // JavaScript 的 Date 月份是 0-11，所以 month 需要 -1
     const date = new Date(dateParts[2], parseInt(dateParts[1]) - 1, dateParts[0], timeParts[0], timeParts[1]);
-    
-    // 加上預報小時
     date.setHours(date.getHours() + parseFloat(addHours));
 
-    // 格式化回字串
-    const d = date.getDate();
-    const m = date.getMonth() + 1;
-    const y = date.getFullYear();
-    const h = date.getHours().toString().padStart(2, '0');
-    const min = date.getMinutes().toString().padStart(2, '0');
-
-    return `${d}/${m}/${y} ${h}:${min} (+${addHours}h)`;
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} (+${addHours}h)`;
 }
 
-// [修改] 更新彈出視窗生成函數，加入 baseTime 參數
 function createPopupContent(data, type, baseTimeStr = null) {
     const timeValue = data.datetime || data.time || 'N/A';
     let header = type === 'current' ? ' 實時位置 ' : (type === 'forecast' ? ' 預報位置' : ' 過去位置');
-    
-    // 自動計算預報時間
-    let timeLabel = '';
-    if (type === 'past' || type === 'current') {
-        timeLabel = `時間: ${timeValue}`;
-    } else {
-        if (baseTimeStr && data.f_time) {
-            timeLabel = `預報時間: ${calculateForecastTime(baseTimeStr, data.f_time)}`;
-        } else {
-            timeLabel = `預報時效: +${data.f_time}h`;
-        }
-    }
+    let timeLabel = (type === 'past' || type === 'current') ? `時間: ${timeValue}` : `預報時間: ${calculateForecastTime(baseTimeStr, data.f_time)}`;
     
     let distanceStr = '--';
     if (typeof data.lat === 'number' && typeof data.lng === 'number') {
-        const from = turf.point([data.lng, data.lat]);
-        const to = turf.point([MACAO_COORDS[1], MACAO_COORDS[0]]);
-        const dist = turf.distance(from, to, { units: 'kilometers' });
+        const dist = turf.distance(turf.point([data.lng, data.lat]), turf.point([MACAO_COORDS[1], MACAO_COORDS[0]]), { units: 'kilometers' });
         distanceStr = dist.toFixed(1) + ' 公里';
     }
 
@@ -363,15 +311,11 @@ function createPopupContent(data, type, baseTimeStr = null) {
 
 function drawAlertCircles(layer) {
     const center = turf.point([MACAO_COORDS[1], MACAO_COORDS[0]]);
-    
-    // 獲取澳門邊界 GeoJSON 並以紅線繪製（取代原本的紅星）
     fetch('https://nominatim.openstreetmap.org/search?q=Macau&format=geojson&polygon_geojson=1&limit=1')
         .then(res => res.json())
         .then(data => {
             if (data && data.features && data.features.length > 0) {
-                L.geoJSON(data.features[0].geometry, {
-                    style: { color: 'red', weight: 2, fillOpacity: 0, opacity: 1 }
-                }).addTo(layer);
+                L.geoJSON(data.features[0].geometry, { style: { color: 'red', weight: 2, fillOpacity: 0, opacity: 1 } }).addTo(layer);
             }
         }).catch(err => console.error("獲取澳門邊界失敗: ", err));
 
@@ -382,14 +326,13 @@ function drawAlertCircles(layer) {
     });
 }
 
-/**
- * [修改] 繪製單個熱帶氣旋，並記錄實時距離
- */
 async function drawSingleTC(tcId) {
+    const githubBaseUrl = 'https://raw.githubusercontent.com/zax41006-bot/TC-Track/main';
+
     try {
         const [pRes, fRes] = await Promise.all([
-            fetch(`past_track_${tcId}.csv`).catch(()=>({text:()=>""})), 
-            fetch(`forecast_track_${tcId}.csv`).catch(()=>({text:()=>""}))
+            fetch(`${githubBaseUrl}/past_track_${tcId}.csv`).catch(()=>({text:()=>""})), 
+            fetch(`${githubBaseUrl}/forecast_track_${tcId}.csv`).catch(()=>({text:()=>""}))
         ]);
         const pastData = parseCSV(await pRes.text());
         const forecastData = parseCSV(await fRes.text());
@@ -399,15 +342,10 @@ async function drawSingleTC(tcId) {
         }
 
         const latestPoint = pastData[pastData.length - 1];
-        
-        // 抓取最後一筆 (current) 的 datetime 作為預報推算的基準
         const baseTimeStr = latestPoint.datetime;
         
-        // 計算該氣旋實時位置與澳門的距離
         if (latestPoint.lat !== undefined && latestPoint.lng !== undefined) {
-            const from = turf.point([latestPoint.lng, latestPoint.lat]);
-            const to = turf.point([MACAO_COORDS[1], MACAO_COORDS[0]]);
-            const dist = turf.distance(from, to, { units: 'kilometers' });
+            const dist = turf.distance(turf.point([latestPoint.lng, latestPoint.lat]), turf.point([MACAO_COORDS[1], MACAO_COORDS[0]]), { units: 'kilometers' });
             tcDistances[tcId] = dist.toFixed(1);
         } else {
             tcDistances[tcId] = null;
@@ -424,42 +362,24 @@ async function drawSingleTC(tcId) {
         });
         if(coneParts.length > 0) {
             let combined = coneParts[0];
-            for (let i = 1; i < coneParts.length; i++) { 
-                combined = turf.union(combined, coneParts[i]); 
-            }
-            L.geoJSON(combined, { 
-                style: { color: '#e67e22', weight: 1, dashArray: '5, 5', fillColor: '#f1c40f', fillOpacity: 0.12 } 
-            }).addTo(trackLayer);
+            for (let i = 1; i < coneParts.length; i++) { combined = turf.union(combined, coneParts[i]); }
+            L.geoJSON(combined, { style: { color: '#e67e22', weight: 1, dashArray: '5, 5', fillColor: '#f1c40f', fillOpacity: 0.12 } }).addTo(trackLayer);
         }
 
-        // 過去路徑
         L.polyline(pastData.map(d => [d.lat, d.lng]), { color: '#32CD32', weight: 4 }).addTo(trackLayer);
 
-        // 預報路徑
         let fPath = [[latestPoint.lat, latestPoint.lng]];
         forecastData.forEach(d => fPath.push([d.lat, d.lng]));
         getSmoothLine(fPath, { color: '#3498db', weight: 3, dashArray: '8, 8' }).addTo(trackLayer);
 
-        // 過去點位
         pastData.slice(0, -1).forEach(d => 
-            L.circleMarker([d.lat, d.lng], { 
-                radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, 
-                color: "#444", weight: 1, fillOpacity: 1 
-            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'past'))
+            L.circleMarker([d.lat, d.lng], { radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, color: "#444", weight: 1, fillOpacity: 1 }).addTo(trackLayer).bindPopup(createPopupContent(d, 'past'))
         );
 
-        // 實時位置
-        L.circleMarker([latestPoint.lat, latestPoint.lng], { 
-            radius: 8, fillColor: intensityColors[latestPoint.intensity] || intensityColors.default, 
-            color: "#000", weight: 2.5, fillOpacity: 1 
-        }).addTo(trackLayer).bindPopup(createPopupContent(latestPoint, 'current')).bringToFront();
+        L.circleMarker([latestPoint.lat, latestPoint.lng], { radius: 8, fillColor: intensityColors[latestPoint.intensity] || intensityColors.default, color: "#000", weight: 2.5, fillOpacity: 1 }).addTo(trackLayer).bindPopup(createPopupContent(latestPoint, 'current')).bringToFront();
 
-        // 預報點位 (將 baseTimeStr 傳入)
         forecastData.forEach(d => 
-            L.circleMarker([d.lat, d.lng], { 
-                radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, 
-                color: "#333", weight: 1, fillOpacity: 0.8 
-            }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast', baseTimeStr))
+            L.circleMarker([d.lat, d.lng], { radius: 5, fillColor: intensityColors[d.intensity] || intensityColors.default, color: "#333", weight: 1, fillOpacity: 0.8 }).addTo(trackLayer).bindPopup(createPopupContent(d, 'forecast', baseTimeStr))
         );
 
         return pastData.map(d=>[d.lat, d.lng]).concat(fPath);
@@ -470,24 +390,21 @@ async function drawSingleTC(tcId) {
     }
 }
 
-// 更新右上角距離面板（顯示氣旋名稱）
 function updateDistancePanel(tcIds) {
     const panel = document.getElementById('distance-panel');
     if (!panel) return;
-    
     let html = '<strong>距離澳門</strong>';
     if (!tcIds || tcIds.length === 0) {
         html += '無資料';
         panel.innerHTML = html;
         return;
     }
-    
     let hasData = false;
     tcIds.forEach(id => {
         const dist = tcDistances[id];
         if (dist !== undefined && dist !== null) {
-            const name = TC_NAMES[id] || id;  // 使用氣旋名稱
-            html += `${name}: ${dist} 公里<br>`;
+            const displayName = TC_DISPLAY_NAMES[id] || id;
+            html += `${displayName}: ${dist} 公里<br>`;
             hasData = true;
         }
     });
@@ -500,38 +417,19 @@ async function init() {
     drawAlertCircles(trackLayer);
     const target = document.getElementById('tc-selector').value;
     
-    // 按鈕顯示邏輯
     const forecastBtn = document.getElementById('forecast-btn');
-    const tcpBtn = document.getElementById('tcp-btn');
-    
-    if (forecastBtn) {
-        // 【修改點 2】：移除針對 target === 'all' 隱藏按鈕的邏輯，強制所有情況顯示按鈕
-        forecastBtn.style.display = 'inline-block';
-    }
-    if (tcpBtn) {
-        tcpBtn.style.display = (target === 'A') ? 'inline-block' : 'none';
-    }
+    if (forecastBtn) forecastBtn.style.display = 'inline-block';
 
-    // 清空距離記錄
     tcDistances = {};
-
     let allBounds = [];
     try {
         const tcIds = target === 'all' ? TC_LIST : [target];
-        
         for (const tcId of tcIds) {
             const points = await drawSingleTC(tcId);
-            if (points.length > 0) {
-                allBounds = allBounds.concat(points);
-            }
+            if (points.length > 0) allBounds = allBounds.concat(points);
         }
-        
-        // 更新距離面板
         updateDistancePanel(tcIds);
-
-        if (allBounds.length > 0) {
-            map.fitBounds(allBounds, { padding: [50, 50] });
-        }
+        if (allBounds.length > 0) map.fitBounds(allBounds, { padding: [50, 50] });
     } catch (e) { 
         console.error("數據加載失敗:", e); 
         updateDistancePanel([]);
@@ -550,15 +448,11 @@ var radarVisible = false;
 var satVisible = false; 
 
 function formatTime(timestamp) { 
-    return new Date(timestamp * 1000).toLocaleTimeString('zh-HK', { 
-        hour: '2-digit', minute: '2-digit', hour12: false 
-    }); 
+    return new Date(timestamp * 1000).toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false }); 
 }
 
 function createRadarLayer(frame) { 
-    return new L.TileLayer(apiData.host + frame.path + '/256/{z}/{x}/{y}/2/1_1.png', { 
-        tileSize: 256, opacity: 0.001, maxNativeZoom: 7, maxZoom: 16 
-    }); 
+    return new L.TileLayer(apiData.host + frame.path + '/256/{z}/{x}/{y}/2/1_1.png', { tileSize: 256, opacity: 0.001, maxNativeZoom: 7, maxZoom: 16 }); 
 }
 
 function stop() { 
@@ -578,30 +472,19 @@ function play() {
 }
 
 function playStop() { if (!stop()) play(); }
-
-function updateTimestamp(frame) { 
-    document.getElementById("timestamp").innerHTML = formatTime(frame.time); 
-}
+function updateTimestamp(frame) { document.getElementById("timestamp").innerHTML = formatTime(frame.time); }
 
 function showFrame(position) {
     if (isLoading || mapFrames.length === 0) return;
-    
     position = (position + mapFrames.length) % mapFrames.length;
     var frame = mapFrames[position];
     updateTimestamp(frame);
-
-    if (typeof updateSatelliteLayer === 'function') {
-        updateSatelliteLayer(frame);
-    }
+    if (typeof updateSatelliteLayer === 'function') updateSatelliteLayer(frame);
 
     var oldLayer = currentLayer;
-    
     if (layerCache[position]) {
         if (oldLayer) oldLayer.setOpacity(0);
-
-        var targetOpacity = (satVisible || !radarVisible) ? 0 : 0.8;
-        layerCache[position].setOpacity(targetOpacity);
-        
+        layerCache[position].setOpacity((satVisible || !radarVisible) ? 0 : 0.8);
         currentLayer = layerCache[position];
         animationPosition = position;
         if (animationTimer) animationTimer = setTimeout(play, 500);
@@ -611,9 +494,7 @@ function showFrame(position) {
     isLoading = true;
     var newLayer = createRadarLayer(frame);
     newLayer.on('load', function() {
-        var targetOpacity = (satVisible || !radarVisible) ? 0 : 0.8;
-        newLayer.setOpacity(targetOpacity);
-        
+        newLayer.setOpacity((satVisible || !radarVisible) ? 0 : 0.8);
         if (oldLayer) oldLayer.setOpacity(0);
         layerCache[position] = newLayer;
         currentLayer = newLayer;
@@ -626,8 +507,7 @@ function showFrame(position) {
 
 function getGibsTime(timestamp) {
     var d = new Date((timestamp - 5400) * 1000); 
-    var minutes = Math.floor(d.getUTCMinutes() / 10) * 10;
-    d.setUTCMinutes(minutes);
+    d.setUTCMinutes(Math.floor(d.getUTCMinutes() / 10) * 10);
     d.setUTCSeconds(0);
     return d.toISOString().split('.')[0] + 'Z'; 
 }
@@ -638,34 +518,17 @@ var currentSatLayer = null;
 function updateSatelliteLayer(frame) {
     if (!satVisible || !frame) return;
     var exactTimeStr = getGibsTime(frame.time);
-    
     if (satLayerCache[exactTimeStr]) {
-        if (currentSatLayer && currentSatLayer !== satLayerCache[exactTimeStr]) {
-            currentSatLayer.setOpacity(0);
-        }
+        if (currentSatLayer && currentSatLayer !== satLayerCache[exactTimeStr]) currentSatLayer.setOpacity(0);
         satLayerCache[exactTimeStr].setOpacity(0.75);
         currentSatLayer = satLayerCache[exactTimeStr];
     } else {
-        var himawariWorldview = L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/' +
-            'Himawari_AHI_Band13_Clean_Infrared/default/' +
-            '{time}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png', {
-            time: exactTimeStr, 
-            tileSize: 256,
-            transparent: true,
-            opacity: 0.75,
-            attribution: 'Imagery &copy; NASA GIBS / JMA',
-            maxNativeZoom: 6,
-            maxZoom: 18,
-            zIndex: 10,
-            keepBuffer: 4,
-            updateWhenIdle: false,
-            crossOrigin: true
+        var himawariWorldview = L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/Himawari_AHI_Band13_Clean_Infrared/default/{time}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png', {
+            time: exactTimeStr, tileSize: 256, transparent: true, opacity: 0.75, maxNativeZoom: 6, maxZoom: 18, zIndex: 10, keepBuffer: 4, updateWhenIdle: false, crossOrigin: true
         });
-        
         himawariWorldview.addTo(map);
         satLayerCache[exactTimeStr] = himawariWorldview;
-        
-        if (currentSatLayer) { currentSatLayer.setOpacity(0); }
+        if (currentSatLayer) currentSatLayer.setOpacity(0);
         currentSatLayer = himawariWorldview;
     }
 }
@@ -674,24 +537,19 @@ function handleWeatherLayerChange(value) {
     stop();
     radarVisible = false;
     satVisible = false;
-
     document.getElementById('radar-ui-container').style.display = 'none';
-
-    if (currentLayer) { currentLayer.setOpacity(0); }
+    if (currentLayer) currentLayer.setOpacity(0);
     if (currentSatLayer) { currentSatLayer.setOpacity(0); currentSatLayer = null; }
-
     Object.values(satLayerCache).forEach(layer => { if (map.hasLayer(layer)) map.removeLayer(layer); });
     satLayerCache = {};
 
     var legendSubpanel = document.getElementById('radar-legend-subpanel');
-
     if (value === 'radar') {
         radarVisible = true;
         legendSubpanel.style.display = 'block'; 
         document.getElementById('radar-ui-container').style.display = 'block';
         loadOrShowData();
-    } 
-    else if (value === 'satellite') {
+    } else if (value === 'satellite') {
         satVisible = true;
         legendSubpanel.style.display = 'none';  
         document.getElementById('radar-ui-container').style.display = 'block';
