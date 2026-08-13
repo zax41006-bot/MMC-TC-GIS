@@ -131,23 +131,26 @@ def draw_chart():
         ax.text(0.98, 0.98, "澳門氣象中心MMC 發佈", transform=ax.transAxes, ha='right', va='top', fontsize=11.0, fontweight='bold',
                 color='#3E2723', bbox=dict(boxstyle="round,pad=0.3", fc="white", alpha=0.9, ec="none"), zorder=20)
 
-        # 圖例（對應縮小圖示標記）
+        # 圖例（放大標記尺寸、放大字體）
         leg_core = [Line2D([0], [0], color="#43A047", lw=2.2, label='過去路徑'), 
                     Line2D([0], [0], color="#1976D2", lw=2.2, ls='--', label='預報路徑'), 
                     plt.Rectangle((0, 0), 1, 1, fc="#FFF5D7", alpha=0.45, ec="#FFD180", label='預報誤差範圍')]
         
-        leg_int = [Line2D([0], [0], marker=tcmarkers.HU, c=get_intensity_info(v)[1], label=get_intensity_info(v)[0], ms=4.0, mec='k', mew=0.5, ls='') for v in [30, 50, 75, 100, 130, 160, 200]]
+        # 強度圖例 marker 放大 ms=6.0
+        leg_int = [Line2D([0], [0], marker=tcmarkers.HU, c=get_intensity_info(v)[1], label=get_intensity_info(v)[0], ms=6.0, mec='k', mew=0.5, ls='') for v in [30, 50, 75, 100, 130, 160, 200]]
         
-        leg_node = [Line2D([0], [0], marker=tcmarkers.HU, color="#1976D2", ms=4.5, mec='#333', mew=0.5, ls='', label='24小時預報節點'), 
-                    Line2D([0], [0], marker='x', color="#1976D2", ms=3.5, mew=0.8, ls='', label='12小時預報節點')]
+        # 節點圖例放大
+        leg_node = [Line2D([0], [0], marker=tcmarkers.HU, color="#1976D2", ms=6.0, mec='#333', mew=0.5, ls='', label='24小時預報節點'), 
+                    Line2D([0], [0], marker='x', color="#1976D2", ms=5.0, mew=0.8, ls='', label='12小時預報節點')]
 
         leg_params = dict(loc='lower center', frameon=True, edgecolor='#8D6E63', facecolor='white', framealpha=0.85)
 
-        fig.legend(handles=leg_core, ncol=3, bbox_to_anchor=(0.5, 0.13), fontsize=8.5, **leg_params)
-        fig.legend(handles=leg_int, ncol=7, bbox_to_anchor=(0.5, 0.08), fontsize=8.0, **leg_params)
-        fig.legend(handles=leg_node, ncol=2, bbox_to_anchor=(0.5, 0.04), fontsize=8.5, **leg_params)
+        # 圖例字體放大
+        fig.legend(handles=leg_core, ncol=3, bbox_to_anchor=(0.5, 0.13), fontsize=10.0, **leg_params)
+        fig.legend(handles=leg_int, ncol=7, bbox_to_anchor=(0.5, 0.08), fontsize=9.5, **leg_params)
+        fig.legend(handles=leg_node, ncol=2, bbox_to_anchor=(0.5, 0.04), fontsize=10.0, **leg_params)
 
-        plt.subplots_adjust(bottom=0.2, top=0.88)
+        plt.subplots_adjust(bottom=0.22, top=0.88)
         plt.savefig(OUTPUT_IMG, dpi=300, bbox_inches='tight')
         plt.close()
         
