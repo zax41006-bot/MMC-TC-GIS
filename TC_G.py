@@ -39,7 +39,8 @@ def lon_to_km_factor(lat):
     return 111.320 * np.cos(np.radians(lat))
 
 def get_intensity_info(wind, cyc_type="tropical"):
-    if cyc_type == "EX": return "溫帶氣旋", "#BDBDBD", tcmarkers.HU
+    if cyc_type == "EX": 
+        return "溫帶氣旋", "#B0B0B0", tcmarkers.HU   # 颜色比低压区深一点
     if wind < 41: return "低壓區", "#BDBDBD", tcmarkers.HU
     elif 41 <= wind <= 62: return "熱帶低氣壓", "#FFF176", tcmarkers.HU
     elif 63 <= wind <= 87: return "熱帶風暴", "#64B5F6", tcmarkers.HU
@@ -67,7 +68,7 @@ def draw_chart():
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
         
         # 根據過去與預報經緯度動態或固定邊界
-        lon_min, lon_max, lat_min, lat_max = 101.0, 178.0, 1.0, 58.0
+        lon_min, lon_max, lat_min, lat_max = 100.0, 180.0, 0.0, 60.0
         ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
@@ -131,23 +132,24 @@ def draw_chart():
         ax.text(0.98, 0.98, "澳門氣象中心MMC 發佈", transform=ax.transAxes, ha='right', va='top', fontsize=11.0, fontweight='bold',
                 color='#3E2723', bbox=dict(boxstyle="round,pad=0.3", fc="white", alpha=0.9, ec="none"), zorder=20)
 
-        # 圖例（放大標記尺寸、放大字體）
+        # ===== 圖例 =====
         leg_core = [Line2D([0], [0], color="#43A047", lw=2.2, label='過去路徑'), 
                     Line2D([0], [0], color="#1976D2", lw=2.2, ls='--', label='預報路徑'), 
                     plt.Rectangle((0, 0), 1, 1, fc="#FFF5D7", alpha=0.45, ec="#FFD180", label='預報誤差範圍')]
-        
-        # 強度圖例 marker 放大 ms=6.0
+
+        # 強度圖例（原 7 個，現增加溫帶氣旋 → 8 個）
         leg_int = [Line2D([0], [0], marker=tcmarkers.HU, c=get_intensity_info(v)[1], label=get_intensity_info(v)[0], ms=6.0, mec='k', mew=0.5, ls='') for v in [30, 50, 75, 100, 130, 160, 200]]
-        
-        # 節點圖例放大
+        # ★ 新增溫帶氣旋，顏色 #B0B0B0，放在超強颱風之後
+        leg_int.append(Line2D([0], [0], marker=tcmarkers.HU, c="#B0B0B0", label='溫帶氣旋', ms=6.0, mec='k', mew=0.5, ls=''))
+
         leg_node = [Line2D([0], [0], marker=tcmarkers.HU, color="#1976D2", ms=6.0, mec='#333', mew=0.5, ls='', label='24小時預報節點'), 
                     Line2D([0], [0], marker='x', color="#1976D2", ms=5.0, mew=0.8, ls='', label='12小時預報節點')]
 
         leg_params = dict(loc='lower center', frameon=True, edgecolor='#8D6E63', facecolor='white', framealpha=0.85)
 
-        # 圖例字體放大
+        # 圖例字體放大，並調整 ncol 為 8（強度圖例）
         fig.legend(handles=leg_core, ncol=3, bbox_to_anchor=(0.5, 0.13), fontsize=10.0, **leg_params)
-        fig.legend(handles=leg_int, ncol=7, bbox_to_anchor=(0.5, 0.08), fontsize=9.5, **leg_params)
+        fig.legend(handles=leg_int, ncol=8, bbox_to_anchor=(0.5, 0.08), fontsize=9.5, **leg_params)
         fig.legend(handles=leg_node, ncol=2, bbox_to_anchor=(0.5, 0.04), fontsize=10.0, **leg_params)
 
         plt.subplots_adjust(bottom=0.22, top=0.88)
