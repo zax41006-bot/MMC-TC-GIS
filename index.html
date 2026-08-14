@@ -122,6 +122,7 @@
         <select id="tc-selector" onchange="init()">
             <option value="all" selected>所有熱帶氣旋</option>
             <option value="G">浪卡</option>
+            <option value="H">未命名</option>
         </select>
     </div>
 </div>
@@ -194,11 +195,12 @@
 <script>
 
 // 代號清單直接為字母
-const TC_LIST = ['G'];
+const TC_LIST = ['G','H'];
 
 // 用於距離面板顯示名稱（已移除字母標註）
 const TC_DISPLAY_NAMES = {
-    'G': '浪卡'
+    'G': '浪卡',
+    'H': '未命名'
 };
 
 const baseLayers = {
