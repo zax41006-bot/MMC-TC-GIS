@@ -122,6 +122,7 @@
         <select id="tc-selector" onchange="init()">
             <option value="all" selected>所有熱帶氣旋</option>
             <option value="A">潛在熱帶氣旋</option>
+            <option value="B">熱帶低氣壓92W</option>
         </select>
     </div>
 </div>
@@ -194,11 +195,12 @@
 <script>
 
 // 代號清單直接為字母
-const TC_LIST = ['A'];
+const TC_LIST = ['A','B'];
 
 // 用於距離面板顯示名稱（已移除字母標註）
 const TC_DISPLAY_NAMES = {
     'A': '潛在熱帶氣旋',
+    'B': '未命名[92W]'
 };
 
 const baseLayers = {
