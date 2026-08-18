@@ -133,7 +133,7 @@ def draw_chart():
 
         # 標題與資訊欄
         #fig.text(0.5, 0.94, f"熱帶氣旋 “{TC_NAME}” 路徑預報圖", ha='center', fontsize=20, fontweight='bold')
-        fig.text(0.5, 0.94, f"南海東北部潛在熱帶氣旋 路徑預報圖", ha='center', fontsize=20, fontweight='bold')
+        fig.text(0.5, 0.94, f"南海中部潛在熱帶氣旋 路徑預報圖", ha='center', fontsize=20, fontweight='bold')
         fig.text(0.5, 0.91, f"預報時效：{max(f_hs)} 小時", ha='center', fontsize=13, color='#424242')
 
         # === 資訊欄字串新增「距離澳門」 ===
