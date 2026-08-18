@@ -109,7 +109,6 @@ def draw_chart():
                           ccrs.PlateCarree(), fc="#FFF5D7", alpha=0.45, ec="#FFD180", lw=0.7, zorder=3)
         ax.plot(xi, yi, color="#1976D2", lw=2.2, ls='--', zorder=4)
 
-        # 預報點 ICON（縮小至 ms=6.0，12hr 節點 ms=4.0）
         for d in forecast_data:
             _, ln, lt, wd, h, _, cyc = d
             _, col, m = get_intensity_info(wd, cyc)
@@ -122,12 +121,23 @@ def draw_chart():
         _, c_col, c_m = get_intensity_info(curr[3])
         ax.plot(curr[1], curr[2], marker=c_m, ms=7.5, color=c_col, mec='k', mew=0.8, zorder=10)
 
+        # ==================== 新增：計算與澳門的實際距離 ====================
+        lat1, lon1 = np.radians(MACAO_LAT), np.radians(MACAO_LON)
+        lat2, lon2 = np.radians(curr[2]), np.radians(curr[1])
+        # 使用 Haversine 公式計算地球大圓距離 (公里)
+        a_haver = np.sin((lat2 - lat1) / 2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin((lon2 - lon1) / 2)**2
+        dist_km = 6371.0 * 2 * np.arctan2(np.sqrt(a_haver), np.sqrt(1 - a_haver))
+        # 四捨五入至十位數 (例：344 -> 340, 346 -> 350)
+        dist_rounded = int(np.round(dist_km / 10.0) * 10)
+        # ====================================================================
+
         # 標題與資訊欄
         #fig.text(0.5, 0.94, f"熱帶氣旋 “{TC_NAME}” 路徑預報圖", ha='center', fontsize=20, fontweight='bold')
         fig.text(0.5, 0.94, f"南海東北部潛在熱帶氣旋 路徑預報圖", ha='center', fontsize=20, fontweight='bold')
         fig.text(0.5, 0.91, f"預報時效：{max(f_hs)} 小時", ha='center', fontsize=13, color='#424242')
 
-        info_txt = f"現時位置資料\n時間：{curr[0]}\n強度：{get_intensity_info(curr[3])[0]}\n近中心最大風速：{curr[3]}kph  中心氣壓：{curr[4]}hPa\n現時位置：{curr[2]:.1f}°N, {curr[1]:.1f}°E"
+        # === 資訊欄字串新增「距離澳門」 ===
+        info_txt = f"現時位置資料\n時間：{curr[0]}\n強度：{get_intensity_info(curr[3])[0]}\n近中心最大風速：{curr[3]}kph  中心氣壓：{curr[4]}hPa\n現時位置：{curr[2]:.1f}°N, {curr[1]:.1f}°E\n距離澳門：約{dist_rounded}公里"
         ax.text(0.03, 0.96, info_txt, transform=ax.transAxes, va='top', fontsize=9.0, fontweight='bold', linespacing=1.35,
                 bbox=dict(boxstyle="round,pad=0.4", fc="white", alpha=0.8, ec="#8D6E63", lw=1.0), zorder=20)
         ax.text(0.98, 0.98, "澳門氣象中心MMC 發佈", transform=ax.transAxes, ha='right', va='top', fontsize=11.0, fontweight='bold',
