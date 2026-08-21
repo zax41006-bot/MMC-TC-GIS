@@ -43,18 +43,21 @@
         #mapid { position: absolute; top: 50px; left: 0; bottom: 0; right: 0; background: #aad3df; }
         .leaflet-top.leaflet-left { top: 60px; }
 
-        /* 橫向分排底欄圖例 */
+        /* ========== 修改後圖例CSS ========== */
         .professional-legend {
             position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
-            background: var(--panel-bg); padding: 8px 16px; border-radius: 8px;
+            background: var(--panel-bg); padding: 8px 12px; border-radius: 8px;
             z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.15); border: 1px solid #ddd;
-            max-width: 95vw; overflow-x: auto; white-space: nowrap;
+            max-width: 96vw;
+            white-space: normal;
+            overflow-x: unset;
         }
         .legend-grid {
             display: flex; flex-direction: column; gap: 6px; font-size: 11px;
         }
         .legend-section {
-            display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;
+            display: flex; align-items: center; gap: 8px;
+            flex-wrap: wrap;
         }
         .legend-title {
             font-weight: bold; font-size: 12px; color: #2c3e50; margin-right: 2px; flex-shrink: 0;
