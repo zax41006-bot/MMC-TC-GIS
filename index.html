@@ -59,6 +59,10 @@
             display: flex; align-items: center; gap: 8px;
             flex-wrap: wrap;
         }
+        /* 讓強度等級區塊不強制斷行，保持在同一排 */
+        .legend-section.intensity-section {
+            flex-wrap: nowrap;
+        }
         .legend-title {
             font-weight: bold; font-size: 12px; color: #2c3e50; margin-right: 2px; flex-shrink: 0;
         }
@@ -139,6 +143,9 @@
                 align-items: flex-start;
                 gap: 4px !important;
             }
+            .legend-section.intensity-section {
+                flex-direction: column;
+            }
             .legend-title { font-size: 10px; }
             .legend-row { font-size:9px; }
 
@@ -213,7 +220,7 @@
             <div class="legend-row"><div class="box"></div> 70% 誤差帶</div>
         </div>
         
-        <div class="legend-section">
+        <div class="legend-section intensity-section">
             <span class="legend-title">強度等級</span>
             <div class="legend-row"><div class="dot" style="background:#dcdcdc;"></div> LPA 低壓區</div>
             <div class="legend-row"><div class="dot" style="background:#eee8aa;"></div> TD 熱帶低氣壓</div>
