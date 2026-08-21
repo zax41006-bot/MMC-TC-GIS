@@ -43,16 +43,27 @@
         #mapid { position: absolute; top: 50px; left: 0; bottom: 0; right: 0; background: #aad3df; }
         .leaflet-top.leaflet-left { top: 60px; }
 
+        /* 橫向分排底欄圖例 */
         .professional-legend {
-            position: absolute; bottom: 20px; right: 10px;
-            background: var(--panel-bg); padding: 12px; border-radius: 8px;
-            z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.15); border: 1px solid #ddd; width: 210px;
+            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+            background: var(--panel-bg); padding: 8px 16px; border-radius: 8px;
+            z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.15); border: 1px solid #ddd;
+            max-width: 95vw; overflow-x: auto; white-space: nowrap;
         }
-        .legend-title { font-weight: bold; border-bottom: 2px solid #eee; margin-bottom: 8px; padding-bottom: 4px; font-size: 13px; color: #333; }
-        .legend-row { display: flex; align-items: center; gap: 10px; margin: 6px 0; font-size: 11px; }
-        .dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid #444; flex-shrink: 0; }
-        .line { width: 25px; height: 3px; flex-shrink: 0; }
-        .box { width: 14px; height: 14px; border: 1px dashed #e67e22; background: rgba(241,196,15,0.15); flex-shrink: 0; }
+        .legend-grid {
+            display: flex; flex-direction: column; gap: 6px; font-size: 11px;
+        }
+        .legend-section {
+            display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;
+        }
+        .legend-title {
+            font-weight: bold; font-size: 12px; color: #2c3e50; margin-right: 2px; flex-shrink: 0;
+        }
+        .legend-title::after { content: ":"; }
+        .legend-row { display: flex; align-items: center; gap: 4px; font-size: 11px; flex-shrink: 0; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #444; flex-shrink: 0; }
+        .line { width: 22px; height: 3px; flex-shrink: 0; }
+        .box { width: 12px; height: 12px; border: 1px dashed #e67e22; background: rgba(241,196,15,0.15); flex-shrink: 0; }
 
         #img-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -63,7 +74,7 @@
         .circle-label { background: none !important; border: none !important; box-shadow: none !important; }
 
         .radar-ui {
-            position: absolute; bottom: 20px; left: 10px; background: var(--panel-bg);
+            position: absolute; bottom: 85px; left: 10px; background: var(--panel-bg);
             padding: 12px; border-radius: 8px; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.15);
             border: 1px solid #ddd; width: 260px; display: none;
         }
@@ -92,7 +103,7 @@
             font-weight: 500;
             color: #2c3e50;
             min-width: 150px;
-            line-height: 1.6;
+            line-height: 1.5;
             border: 1px solid #ddd;
         }
         #distance-panel strong {
@@ -106,10 +117,12 @@
 
         @media screen and (max-width: 768px) {
             .header b { font-size: 13px; }
-            .radar-ui { bottom: 220px; width: 240px; padding: 10px; }
-            .professional-legend { width: calc(100% - 40px); left: 10px; right: 10px; bottom: 15px; padding: 10px; max-height: 180px; overflow-y: auto; }
-            .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; }
-            .legend-title { font-size: 12px; grid-column: span 2; margin-top: 5px; }
+            .radar-ui { bottom: 100px; width: 240px; padding: 10px; }
+            .professional-legend { max-width: 95vw; padding: 6px 10px; bottom: 10px; }
+            .legend-grid { gap: 4px; }
+            .legend-section { gap: 6px; }
+            .legend-title { font-size: 11px; }
+            .legend-row { font-size: 10px; }
             #distance-panel { top: 140px; font-size: 12px; min-width: 130px; padding: 8px 10px; }
         }
     </style>
@@ -173,31 +186,32 @@
 
 <div class="professional-legend">
     <div class="legend-grid">
-        <div class="legend-title">路徑圖例</div>
-        <div class="legend-row"><div class="dot" style="background:#fff; border: 2.5px solid #000; width:12px; height:12px;"></div> <b>實時位置</b></div>
-        <div class="legend-row"><div class="line" style="background: #32CD32;"></div> 過去路徑</div>
-        <div class="legend-row"><div class="line" style="border-top: 3px dashed #3498db;"></div> 預報路徑</div>
-        <div class="legend-row"><div class="box"></div> 70% 誤差帶</div>
+        <div class="legend-section">
+            <span class="legend-title">路徑圖例</span>
+            <div class="legend-row"><div class="dot" style="background:#fff; border: 2.5px solid #000; width:10px; height:10px;"></div> <b>實時位置</b></div>
+            <div class="legend-row"><div class="line" style="background: #32CD32;"></div> 過去路徑</div>
+            <div class="legend-row"><div class="line" style="border-top: 3px dashed #3498db;"></div> 預報路徑</div>
+            <div class="legend-row"><div class="box"></div> 70% 誤差帶</div>
+        </div>
         
-        <div class="legend-title">強度等級</div>
-        <div class="legend-row"><div class="dot" style="background:#dcdcdc;"></div> LPA 低壓區</div>
-        <div class="legend-row"><div class="dot" style="background:#eee8aa;"></div> TD 熱帶低氣壓</div>
-        <div class="legend-row"><div class="dot" style="background:#3498db;"></div> TS 熱帶風暴</div>
-        <div class="legend-row"><div class="dot" style="background:#2ecc71;"></div> STS 強烈熱帶風暴</div>
-        <div class="legend-row"><div class="dot" style="background:#ffa200f6;"></div> TY 颱風</div>
-        <div class="legend-row"><div class="dot" style="background:#ff0000;"></div> STY 強颱風</div>
-        <div class="legend-row"><div class="dot" style="background:#9b59b6;"></div> SUTY 超強颱風</div>
-        <!-- 溫帶氣旋圖例置於超強颱風下方，顏色比低壓區深 -->
-        <div class="legend-row"><div class="dot" style="background:#b0b0b0;"></div> EX 溫帶氣旋</div>
+        <div class="legend-section">
+            <span class="legend-title">強度等級</span>
+            <div class="legend-row"><div class="dot" style="background:#dcdcdc;"></div> LPA 低壓區</div>
+            <div class="legend-row"><div class="dot" style="background:#eee8aa;"></div> TD 熱帶低氣壓</div>
+            <div class="legend-row"><div class="dot" style="background:#3498db;"></div> TS 熱帶風暴</div>
+            <div class="legend-row"><div class="dot" style="background:#2ecc71;"></div> STS 強烈熱帶風暴</div>
+            <div class="legend-row"><div class="dot" style="background:#ffa200f6;"></div> TY 颱風</div>
+            <div class="legend-row"><div class="dot" style="background:#ff0000;"></div> STY 強颱風</div>
+            <div class="legend-row"><div class="dot" style="background:#9b59b6;"></div> SUTY 超強颱風</div>
+            <div class="legend-row"><div class="dot" style="background:#b0b0b0;"></div> EX 溫帶氣旋</div>
+        </div>
     </div>
 </div>
 
 <script>
 
-// 代號清單直接為字母
 const TC_LIST = ['A','B'];
 
-// 用於距離面板顯示名稱（已移除字母標註）
 const TC_DISPLAY_NAMES = {
     'A': '熱帶低氣壓',
     'B': '沙德爾'
@@ -220,7 +234,6 @@ function changeMapType(type) {
     baseLayers[type].addTo(map);
 }
 
-// 強度顏色：EX 設為 #b0b0b0（比 LPA 的 #dcdcdc 深）
 const intensityColors = { 
     "LPA": "#dcdcdc", 
     "EX": "#b0b0b0", 
@@ -366,10 +379,14 @@ async function drawSingleTC(tcId) {
 
         const latestPoint = pastData[pastData.length - 1];
         const baseTimeStr = latestPoint.datetime;
+        const currentDataTime = latestPoint.datetime || latestPoint.time || '--';
         
         if (latestPoint.lat !== undefined && latestPoint.lng !== undefined) {
             const dist = turf.distance(turf.point([latestPoint.lng, latestPoint.lat]), turf.point([MACAO_COORDS[1], MACAO_COORDS[0]]), { units: 'kilometers' });
-            tcDistances[tcId] = dist.toFixed(1);
+            tcDistances[tcId] = {
+                dist: dist.toFixed(1),
+                time: currentDataTime
+            };
         } else {
             tcDistances[tcId] = null;
         }
@@ -424,10 +441,14 @@ function updateDistancePanel(tcIds) {
     }
     let hasData = false;
     tcIds.forEach(id => {
-        const dist = tcDistances[id];
-        if (dist !== undefined && dist !== null) {
+        const info = tcDistances[id];
+        if (info && info.dist !== undefined && info.dist !== null) {
             const displayName = TC_DISPLAY_NAMES[id] || id;
-            html += `${displayName}: ${dist} 公里<br>`;
+            html += `<div style="margin-top: 6px;">
+                        <b>${displayName}</b><br>
+                        <span style="font-size: 11px; color: #555;">實時時間: ${info.time}</span><br>
+                        距離: ${info.dist} 公里
+                    </div>`;
             hasData = true;
         }
     });
