@@ -43,7 +43,7 @@
         #mapid { position: absolute; top: 50px; left: 0; bottom: 0; right: 0; background: #aad3df; }
         .leaflet-top.leaflet-left { top: 60px; }
 
-        /* ========== 修改後圖例CSS ========== */
+        /* ========== 電腦版：圖例置底正中 ========== */
         .professional-legend {
             position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
             background: var(--panel-bg); padding: 8px 12px; border-radius: 8px;
@@ -118,14 +118,30 @@
             color: #2c3e50;
         }
 
+        /* ========== 手機版：右下角 + 直排分兩組圖例（對應你截圖樣式） ========== */
         @media screen and (max-width: 768px) {
             .header b { font-size: 13px; }
             .radar-ui { bottom: 100px; width: 240px; padding: 10px; }
-            .professional-legend { max-width: 95vw; padding: 6px 10px; bottom: 10px; }
-            .legend-grid { gap: 4px; }
-            .legend-section { gap: 6px; }
-            .legend-title { font-size: 11px; }
-            .legend-row { font-size: 10px; }
+
+            .professional-legend {
+                left: auto !important;
+                right: 10px !important;
+                bottom: 10px !important;
+                transform: none !important;
+                max-width: 42vw;
+                padding: 6px 8px;
+            }
+            .legend-grid {
+                gap: 8px !important;
+            }
+            .legend-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px !important;
+            }
+            .legend-title { font-size: 10px; }
+            .legend-row { font-size:9px; }
+
             #distance-panel { top: 140px; font-size: 12px; min-width: 130px; padding: 8px 10px; }
         }
     </style>
