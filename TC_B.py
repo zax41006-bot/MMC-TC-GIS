@@ -68,7 +68,7 @@ def draw_chart():
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
         
         # 根據過去與預報經緯度動態或固定邊界
-        lon_min, lon_max, lat_min, lat_max = 105.0, 165.0, 0.0, 40.0
+        lon_min, lon_max, lat_min, lat_max = 105.0, 145.0, 10.0, 40.0
         ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
