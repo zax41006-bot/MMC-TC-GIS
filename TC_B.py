@@ -68,7 +68,7 @@ def draw_chart():
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
         
         # 根據過去與預報經緯度動態或固定邊界
-        lon_min, lon_max, lat_min, lat_max = 105.0, 140.0, 15.0, 40.0
+        lon_min, lon_max, lat_min, lat_max = 105.0, 125.0, 15.0, 30.0
         ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
@@ -113,13 +113,13 @@ def draw_chart():
             _, ln, lt, wd, h, _, cyc = d
             _, col, m = get_intensity_info(wd, cyc)
             if h in {24, 48, 72, 96, 120}:
-                ax.plot(ln, lt, marker=m, ms=7.0, color=col, mec='k', mew=0.6, zorder=10)
+                ax.plot(ln, lt, marker=m, ms=9.0, color=col, mec='k', mew=0.6, zorder=10)
             else:
-                ax.plot(ln, lt, marker='x', ms=5.0, color="#1976D2", mew=0.8, zorder=9)
+                ax.plot(ln, lt, marker='x', ms=7.0, color="#1976D2", mew=0.8, zorder=9)
 
         # 現時位置 ICON（縮小至 ms=7.5）
         _, c_col, c_m = get_intensity_info(curr[3])
-        ax.plot(curr[1], curr[2], marker=c_m, ms=7.5, color=c_col, mec='k', mew=0.8, zorder=10)
+        ax.plot(curr[1], curr[2], marker=c_m, ms=9.0, color=c_col, mec='k', mew=0.8, zorder=10)
 
         # ==================== 新增：計算與澳門的實際距離 ====================
         lat1, lon1 = np.radians(MACAO_LAT), np.radians(MACAO_LON)
