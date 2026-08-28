@@ -150,7 +150,7 @@ def draw_chart():
         # 強度圖例（原 7 個，現增加溫帶氣旋 → 8 個）
         leg_int = [Line2D([0], [0], marker=tcmarkers.HU, c=get_intensity_info(v)[1], label=get_intensity_info(v)[0], ms=6.0, mec='k', mew=0.5, ls='') for v in [30, 50, 75, 100, 130, 160, 200]]
         # ★ 新增溫帶氣旋，顏色 #B0B0B0，放在超強颱風之後
-        #leg_int.append(Line2D([0], [0], marker=tcmarkers.HU, c="#B0B0B0", label='溫帶氣旋', ms=6.0, mec='k', mew=0.5, ls=''))
+        leg_int.append(Line2D([0], [0], marker=tcmarkers.HU, c="#B0B0B0", label='溫帶氣旋', ms=6.0, mec='k', mew=0.5, ls=''))
 
         leg_node = [Line2D([0], [0], marker=tcmarkers.HU, color="#1976D2", ms=6.0, mec='#333', mew=0.5, ls='', label='24小時預報節點'), 
                     Line2D([0], [0], marker='x', color="#1976D2", ms=5.0, mew=0.8, ls='', label='12小時預報節點')]
