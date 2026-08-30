@@ -17,7 +17,7 @@ import tcmarkers
 
 # ==================== 1. 氣旋與 GitHub Pages 網址設定 ====================
 TC_ID = "G"
-TC_NAME = "浪卡"
+TC_NAME = "未命名"
 
 # 你的 GitHub Pages 基礎網址
 SITE_BASE_URL = "https://zax41006-bot.github.io/TC-Track"
@@ -39,8 +39,8 @@ def lon_to_km_factor(lat):
     return 111.320 * np.cos(np.radians(lat))
 
 def get_intensity_info(wind, cyc_type="tropical"):
-    if cyc_type == "EX": 
-        return "溫帶氣旋", "#B0B0B0", tcmarkers.HU   # 颜色比低压区深一点
+    #if cyc_type == "EX": 
+     #   return "溫帶氣旋", "#B0B0B0", tcmarkers.HU   # 颜色比低压区深一点
     if wind < 41: return "低壓區", "#BDBDBD", tcmarkers.HU
     elif 41 <= wind <= 62: return "熱帶低氣壓", "#FFF176", tcmarkers.HU
     elif 63 <= wind <= 87: return "熱帶風暴", "#64B5F6", tcmarkers.HU
@@ -68,7 +68,7 @@ def draw_chart():
         fig, ax = plt.subplots(figsize=(12, 10), subplot_kw={'projection': ccrs.PlateCarree()})
         
         # 根據過去與預報經緯度動態或固定邊界
-        lon_min, lon_max, lat_min, lat_max = 100.0, 180.0, 0.0, 60.0
+        lon_min, lon_max, lat_min, lat_max = 110.0, 150.0, 10.0, 40.0
         ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
         ax.add_feature(cfeature.LAND, facecolor="#F5F5DC", edgecolor="#795548", linewidth=0.8, zorder=1)
@@ -109,23 +109,34 @@ def draw_chart():
                           ccrs.PlateCarree(), fc="#FFF5D7", alpha=0.45, ec="#FFD180", lw=0.7, zorder=3)
         ax.plot(xi, yi, color="#1976D2", lw=2.2, ls='--', zorder=4)
 
-        # 預報點 ICON（縮小至 ms=6.0，12hr 節點 ms=4.0）
         for d in forecast_data:
             _, ln, lt, wd, h, _, cyc = d
             _, col, m = get_intensity_info(wd, cyc)
             if h in {24, 48, 72, 96, 120}:
-                ax.plot(ln, lt, marker=m, ms=6.0, color=col, mec='k', mew=0.6, zorder=10)
+                ax.plot(ln, lt, marker=m, ms=7.0, color=col, mec='k', mew=0.6, zorder=10)
             else:
-                ax.plot(ln, lt, marker='x', ms=4.0, color="#1976D2", mew=0.8, zorder=9)
+                ax.plot(ln, lt, marker='x', ms=5.0, color="#1976D2", mew=0.8, zorder=9)
 
         # 現時位置 ICON（縮小至 ms=7.5）
         _, c_col, c_m = get_intensity_info(curr[3])
         ax.plot(curr[1], curr[2], marker=c_m, ms=7.5, color=c_col, mec='k', mew=0.8, zorder=10)
 
+        # ==================== 新增：計算與澳門的實際距離 ====================
+        lat1, lon1 = np.radians(MACAO_LAT), np.radians(MACAO_LON)
+        lat2, lon2 = np.radians(curr[2]), np.radians(curr[1])
+        # 使用 Haversine 公式計算地球大圓距離 (公里)
+        a_haver = np.sin((lat2 - lat1) / 2)**2 + np.cos(lat1) * np.cos(lat2) * np.sin((lon2 - lon1) / 2)**2
+        dist_km = 6371.0 * 2 * np.arctan2(np.sqrt(a_haver), np.sqrt(1 - a_haver))
+        # 四捨五入至十位數 (例：344 -> 340, 346 -> 350)
+        dist_rounded = int(np.round(dist_km / 10.0) * 10)
+        # ====================================================================
+
         # 標題與資訊欄
         fig.text(0.5, 0.94, f"熱帶氣旋 “{TC_NAME}” 路徑預報圖", ha='center', fontsize=20, fontweight='bold')
+        #fig.text(0.5, 0.94, f"南海中部潛在熱帶氣旋 路徑預報圖", ha='center', fontsize=20, fontweight='bold')
         fig.text(0.5, 0.91, f"預報時效：{max(f_hs)} 小時", ha='center', fontsize=13, color='#424242')
 
+        # === 資訊欄字串新增「距離澳門」 ===
         info_txt = f"現時位置資料\n時間：{curr[0]}\n強度：{get_intensity_info(curr[3])[0]}\n近中心最大風速：{curr[3]}kph  中心氣壓：{curr[4]}hPa\n現時位置：{curr[2]:.1f}°N, {curr[1]:.1f}°E"
         ax.text(0.03, 0.96, info_txt, transform=ax.transAxes, va='top', fontsize=9.0, fontweight='bold', linespacing=1.35,
                 bbox=dict(boxstyle="round,pad=0.4", fc="white", alpha=0.8, ec="#8D6E63", lw=1.0), zorder=20)
@@ -140,7 +151,7 @@ def draw_chart():
         # 強度圖例（原 7 個，現增加溫帶氣旋 → 8 個）
         leg_int = [Line2D([0], [0], marker=tcmarkers.HU, c=get_intensity_info(v)[1], label=get_intensity_info(v)[0], ms=6.0, mec='k', mew=0.5, ls='') for v in [30, 50, 75, 100, 130, 160, 200]]
         # ★ 新增溫帶氣旋，顏色 #B0B0B0，放在超強颱風之後
-        leg_int.append(Line2D([0], [0], marker=tcmarkers.HU, c="#B0B0B0", label='溫帶氣旋', ms=6.0, mec='k', mew=0.5, ls=''))
+        #leg_int.append(Line2D([0], [0], marker=tcmarkers.HU, c="#B0B0B0", label='溫帶氣旋', ms=6.0, mec='k', mew=0.5, ls=''))
 
         leg_node = [Line2D([0], [0], marker=tcmarkers.HU, color="#1976D2", ms=6.0, mec='#333', mew=0.5, ls='', label='24小時預報節點'), 
                     Line2D([0], [0], marker='x', color="#1976D2", ms=5.0, mew=0.8, ls='', label='12小時預報節點')]
