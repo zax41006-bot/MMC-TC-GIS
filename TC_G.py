@@ -17,7 +17,7 @@ import tcmarkers
 
 # ==================== 1. 氣旋與 GitHub Pages 網址設定 ====================
 TC_ID = "G"
-TC_NAME = "未命名"
+TC_NAME = "科羅旺"
 
 # 你的 GitHub Pages 基礎網址
 SITE_BASE_URL = "https://zax41006-bot.github.io/TC-Track"
